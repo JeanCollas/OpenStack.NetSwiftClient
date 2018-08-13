@@ -1,4 +1,4 @@
-# NetOpenStackSwiftClient
+# OpenStack .Net SwiftClient
 
 A client developed in .Net Standard to access OpenStack servers and perform the most frequent actions.
 
