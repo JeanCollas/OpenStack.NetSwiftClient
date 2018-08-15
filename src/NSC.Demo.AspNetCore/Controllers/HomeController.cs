@@ -24,8 +24,8 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             _TokenService = tokenService;
         }
 
-        [HttpGet("/Home", Name = Routes.GET_Home_Route)]
-        [HttpGet("/", Name = Routes.GET_Explore_Route)]
+        [HttpGet("/", Name = Routes.GET_Home_Route)]
+        [HttpGet("/Explore", Name = Routes.GET_Explore_Route)]
         public async Task<IActionResult> Index(string accountUrl = null, string container = null, string objectName = null)
         {
             if (!_TokenService.HasToken) return View("/Views/Home/Index.cshtml");
