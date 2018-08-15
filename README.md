@@ -39,7 +39,7 @@ Add a `DemoContext.NotIncluded.cs` file on the WPF demo project, with the follow
 ## OVH
 
 OVH provides a object storage service based on the OpenStack API (OpenStack identity + swift).
-They propose a cheap storage, with 3x replication, quite cheap (0.01€/month/GB + 0.01€/outgoing GB):
+They propose a cheap storage, with 3x replication, quite cheap and simple prices (0.01€/month/GB + free incoming + 0.01€/outgoing GB):
 - Static hosting => Store your entire static website, all files are public
 - Public container => Store your website media, all files are public (the difference with the static hosting is unclear)
 - Private container => Store your website media, files are not accessible to the public, but you can allow temporary links via the API
