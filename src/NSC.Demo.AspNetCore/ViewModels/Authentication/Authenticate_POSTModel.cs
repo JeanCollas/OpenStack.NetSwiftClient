@@ -9,7 +9,7 @@ namespace NetSwiftClient.Demo.AspNetCore
     {
         public string AuthAPIV3EndPoint { get; set; }
         public bool SaveAuthEndpoint { get; set; }
-        public string Name { get; set; }
+        public string AuthName { get; set; }
         public bool SaveName { get; set; }
         public string Password { get; set; }
         public string Domain { get; set; } = "Default";
@@ -29,9 +29,9 @@ namespace NetSwiftClient.Demo.AspNetCore
             if (AuthAPIV3EndPoint.IsNullOrEmpty())
                 results.Add((nameof(Authenticate_POSTModel.AuthAPIV3EndPoint), false, ErrorCodes.InvalidAuthEndpoint));
             else results.Add((nameof(Authenticate_POSTModel.AuthAPIV3EndPoint), true, null));
-            if (Name.IsNullOrEmpty())
-                results.Add((nameof(Authenticate_POSTModel.Name), false, ErrorCodes.InvalidName));
-            else results.Add((nameof(Authenticate_POSTModel.Name), true, null));
+            if (AuthName.IsNullOrEmpty())
+                results.Add((nameof(Authenticate_POSTModel.AuthName), false, ErrorCodes.InvalidName));
+            else results.Add((nameof(Authenticate_POSTModel.AuthName), true, null));
             if (Password.IsNullOrEmpty())
                 results.Add((nameof(Authenticate_POSTModel.Password), false, ErrorCodes.InvalidPassword));
             else results.Add((nameof(Authenticate_POSTModel.Password), true, null));

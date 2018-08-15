@@ -101,8 +101,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NetSwiftClient\NetSwiftClient.csproj">
-      <Project>{587d9086-ca10-4939-8be4-edc60c3eee4d}</Project>
+    <ProjectReference Include="..\NSC\NetSwiftClient.csproj">
+      <Project>{f1fe863b-8334-4c85-ae5e-a271ac0a3213}</Project>
       <Name>NetSwiftClient</Name>
     </ProjectReference>
   </ItemGroup>

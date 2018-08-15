@@ -98,7 +98,7 @@
             </div>
         }
         <div id="auth-body">
-            <div id="collapse-auth" class="collapse @((TokenService.HasToken?"":"in"))" data-parent="#auth-body">
+            <div id="collapse-auth" class="collapse @((TokenService.HasToken?"":"show"))" data-parent="#auth-body">
                 <div class="card-body">
                     <form data-url="@authRoute" method="post">
                         @{
@@ -110,7 +110,7 @@
                             };
                             var nameModel = new TextModel()
                             {
-                                Name = nameof(Authenticate_POSTModel.Name),
+                                Name = nameof(Authenticate_POSTModel.AuthName),
                                 Value = token?.Name,
                                 Label = T("Auth.Name.PH"),
                             };

@@ -40,8 +40,12 @@ namespace NetSwiftClient.Demo.AspNetCore
                 {
                     if (!RawOpenStackAuthCookie.IsNullOrEmpty())
                     {
-                        var tok = OpenStackAuthCookie.Decode(_Protector, RawOpenStackAuthCookie);
-                        if (!tok.IsExpired) _Token = tok;
+                        try
+                        {
+                            var tok = OpenStackAuthCookie.Decode(_Protector, RawOpenStackAuthCookie);
+                            if (!tok.IsExpired) _Token = tok;
+                        }
+                        catch { }
                     }
                     _CookieChecked = true;
                 }

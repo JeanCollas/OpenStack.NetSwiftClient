@@ -57,7 +57,7 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
                 return JsonResult(response);
             }
 
-            var authRes = await _SwiftService.AuthenticateAsync(model.AuthAPIV3EndPoint, model.Name, model.Password, model.Domain);
+            var authRes = await _SwiftService.AuthenticateAsync(model.AuthAPIV3EndPoint, model.AuthName, model.Password, model.Domain);
             if (!GenericCheck(() => authRes.IsSuccess, response, (int)authRes.StatusCode, SiteErrorCodes.InvalidCredentials))
             {
                 response.Error += "\n" + authRes.Reason;
@@ -68,7 +68,7 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             _TokenService.Token = new OpenStackAuthCookie()
             {
                 AuthAPIV3EndPoint = model.SaveAuthEndpoint ? model.AuthAPIV3EndPoint : null,
-                Name = model.SaveName ? model.Name : null,
+                Name = model.SaveName ? model.AuthName : null,
                 Domain = model.SaveDomain ? model.Domain : null,
                 ExpirationTime = authRes.TokenExpires ?? DateTime.MaxValue,
                 Token = authRes.Token,
