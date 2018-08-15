@@ -16,6 +16,7 @@
 
     var token = TokenService.HasToken ? TokenService.Token : null;
     var authRoute = Url.RouteUrl(Routes.POST_Authenticate_JSONRoute);
+    var homeRoute = Url.RouteUrl(Routes.GET_Home_Route);
 
 }
 <!DOCTYPE html>
@@ -58,19 +59,16 @@
     <header class="navbar navbar-dark navbar-fixed-top navbar-title navbar fixed-top navbar-expand-lg bg-dark navbar-dark">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                <button type="button" class="navbar-toggler" style="font-size:0.8rem;" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">NetSwiftClient.Demo.AspNetCore</a>
+                <a href="@homeRoute" class="navbar-brand navbar-title" style="">NetSwiftClient demo</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a href="@homeRoute" >Home</a></li>
+                    @*<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
                 </ul>
             </div>
         </div>
@@ -165,7 +163,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - NetSwiftClient.Demo.AspNetCore</p>
+            <p>&copy; 2018 - NetSwiftClient - https://github.com/JeanCollas/OpenStack.NetSwiftClient</p>
         </footer>
     </div>
 

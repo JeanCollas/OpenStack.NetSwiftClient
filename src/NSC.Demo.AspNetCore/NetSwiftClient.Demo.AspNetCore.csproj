@@ -20,7 +20,7 @@
     <Content Update="Views\Explorer\EnterAccountUrl.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Explorer\GetFile.cshtml">
+    <Content Update="Views\Explorer\GetObject.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Explorer\GetContainer.cshtml">

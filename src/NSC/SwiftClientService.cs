@@ -69,8 +69,8 @@ namespace NetSwiftClient
         public string ObjectGetTmpUrlAsync(string container, string objectName, TimeSpan expiresIn, string objectStoreKey, string fileName = null, string ipRange = null, bool? noDownloadButInline = null)
             => ObjectGetTmpUrlAsync(Config.ObjectStoreUrl, container, objectName, expiresIn, objectStoreKey, fileName, ipRange, noDownloadButInline);
 
-        public Task<SwiftContainerInfoResponse> ObjectHeadAsync(string container)
-            => ObjectHeadAsync(Config.ObjectStoreUrl, container);
+        public Task<SwiftObjectGetResponse> ObjectHeadAsync(string container, string objectName)
+            => base.ObjectHeadAsync(Config.ObjectStoreUrl, container, objectName);
 
         public Task<SwiftBaseResponse> ObjectPostAsync(string container, string objectName, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
             => ObjectPostAsync(Config.ObjectStoreUrl, container, objectName, metaValues, additionalHeaders);

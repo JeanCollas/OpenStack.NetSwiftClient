@@ -3,13 +3,14 @@
     Texts["Account.Title"] = "Account details";
     Texts["Account.Endpoint0"] = "Endpoint: {0}";
     Texts["Account.Objects0kBUsed1"] = "{0} objects ({1} kB used)";
+    Texts["Account.Containers0"] = "{0} container(s)";
     Texts["Account.Containers"] = "Containers:";
     Texts["Container.Objects0kBUsed1"] = "{0} objects ({1} kB used)";
     Texts["Container.LastModif0"] = "Last modified: {0}";
     Texts["Account.SetKey"] = "Set a new key";
     Texts["Account.NewKeyPrompt"] = "New key (empty to remove the key)";
     Texts["Account.NewKeyConfirm0"] = "New key: {0}";
-
+    Texts["Info.AllHeaders"] = "All headers";
 
 
     ViewData["Title"] = T("Account.Title");
@@ -23,6 +24,7 @@
 <style>
     .account-containers {
         display: flex;
+        flex-wrap: wrap;
         border: #ccc 1px solid;
         box-shadow: 0 0 14px rgba(0,0,0,0.06);
         padding: 0.5rem;
@@ -37,6 +39,8 @@
 
             .account-containers .account-container .container-name {
                 font-weight: bold;
+                word-break: break-all;
+                hyphens: auto;
             }
             .account-containers .account-container:hover {
                 cursor: pointer;
@@ -44,14 +48,27 @@
             }
 </style>
 <div class="alert alert-warning">
-    <h5>@T("Account.Endpoint0", accountUrl)</h5>
-    @T("Account.Objects0kBUsed1", Model.ObjectCount, Model.BytesUsed / 1024)
+    <h6 style="overflow-x:auto;overflow-y:hidden">@T("Account.Endpoint0", accountUrl)</h6>
+    <div>@T("Account.Containers0", Model.ContentObject?.Count)</div>
+    <div>@T("Account.Objects0kBUsed1", Model.ObjectCount, Model.BytesUsed / 1024)</div>
     <br />
     <div style="display:flex; justify-content:space-between">
         <span>Temp key 1: @Model.TempKey </span><button class="btn btn-light btn-sm" data-url="@setTempKey1Url" onclick="NSC.setTempKey(this)">@T("Account.SetKey")</button>
     </div>
     <div style="display:flex; justify-content:space-between">
         <span>Temp key 2: @Model.TempKey2 </span><button class="btn btn-light btn-sm" data-url="@setTempKey2Url" onclick="NSC.setTempKey(this)">@T("Account.SetKey")</button>
+    </div>
+    <button style="align-self:flex-end" class="btn btn-link btn-sm" data-toggle="collapse" data-target="#all-headers" aria-expanded="true" aria-controls="all-headers">
+        @T("Info.AllHeaders") <i class="fa fa-chevron-down"></i>
+    </button>
+    <div class="collapse" id="all-headers">
+        <div style="display:flex;flex-direction:column">
+            @foreach (var h in Model.Headers)
+            {
+                <div style="display:flex;width:100%;flex:1;border:#ccc 1px solid;padding:0.3rem;"><div style="flex:1">@h.Key</div><div style="flex:1;overflow-x:auto">@h.Value</div></div>
+
+            }
+        </div>
     </div>
 </div>
 <h4>@T("Account.Containers")</h4>

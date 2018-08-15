@@ -41,7 +41,11 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
                 var ss = await _SwiftService.ContainerGetAsync(accountUrl, container);
                 return View("/Views/Explorer/GetContainer.cshtml", ss);
             }
-            return View();
+
+            {
+                var ss = await _SwiftService.ObjectHeadAsync(accountUrl, container, objectName);
+                return View("/Views/Explorer/GetObject.cshtml", ss);
+            }
         }
 
         [HttpPost("/Authenticate", Name = Routes.POST_Authenticate_JSONRoute)]

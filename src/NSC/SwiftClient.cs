@@ -360,11 +360,11 @@ namespace NetSwiftClient
         /// <summary>HEAD Show object metadata</summary>
         /// <returns>204 No Content if the object does not exist</returns>
         /// <returns>200 No Content if the object exists</returns>
-        public Task<SwiftContainerInfoResponse> ObjectHeadAsync(string objectStoreUrl, string container)
+        public Task<SwiftObjectGetResponse> ObjectHeadAsync(string objectStoreUrl, string container, string objectName)
         {
-            string url = GetContainerUrl(objectStoreUrl, container, true);
+            string url = GetObjectUrl(objectStoreUrl, container, objectName, true);
 
-            return GenericHeadRequestNoContentAsync<SwiftContainerInfoResponse>(url);
+            return GenericHeadRequestNoContentAsync<SwiftObjectGetResponse>(url);
         }
 
         /// <summary>Delete object</summary>

@@ -22,7 +22,7 @@ namespace NetSwiftClient
         Task<SwiftBaseResponse> ObjectDeleteAsync(string objectStoreUrl, string container, string objectName);
         Task<SwiftObjectGetResponse> ObjectGetAsync(string objectStoreUrl, string container, string objectName);
         string ObjectGetTmpUrlAsync(string objectStoreUrl, string container, string objectName, TimeSpan expiresIn, string objectStoreKey, string fileName = null, string ipRange = null, bool? noDownloadButInline = null);
-        Task<SwiftContainerInfoResponse> ObjectHeadAsync(string objectStoreUrl, string container);
+        Task<SwiftObjectGetResponse> ObjectHeadAsync(string objectStoreUrl, string container, string objectName);
         Task<SwiftBaseResponse> ObjectPostAsync(string objectStoreUrl, string container, string objectName, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null);
         Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName, byte[] data, string contentType = "application/octet-stream");
         Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName, Stream data, string contentType = "application/octet-stream");
