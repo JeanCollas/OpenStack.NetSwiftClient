@@ -6,6 +6,10 @@ A WPF client is included to demonstrate some of the most important functions, as
 
 It has been developed to address the lack of .Net client for the OVH object storage service.
 
+## Contribution
+
+Feel free to pull request, the client is not exhaustive and will get new features.
+
 ## ASP.NET Core demo project
 
 Just launch the project, on first start, the site should ask for your authentication endpoint and credentials. 
