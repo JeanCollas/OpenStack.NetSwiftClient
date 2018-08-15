@@ -45,3 +45,5 @@ They propose a cheap storage, with 3x replication, quite cheap and simple prices
 - Private container => Store your website media, files are not accessible to the public, but you can allow temporary links via the API
 - Cold storage => Storage is much cheaper, but incoming traffic is paid (0.002€/month/GB + 0.01€/incoming GB + 0.01€/outgoing GB)
 
+https://www.ovh.ie/public-cloud/storage/object-storage/
+
