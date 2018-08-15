@@ -1,0 +1,11 @@
+﻿@model TextAreaModel
+<div class="form-group inputs @Model.Class @(Model.Inline?"inline":"")">
+    
+    <label style="margin:0px 0 5px 0;">
+        @((String.IsNullOrEmpty(Model.LabelKey) ? Model.Label : T(Model.LabelKey)))
+        @if (Model.IsRequired){<required />}
+    </label>
+    
+    <textarea class="form-control patch-on-change" @(Model.IsRequired? "required":"") cols="20" id="@(Model.Id)" name="@(Model.Name)"
+              placeholder="@Model.PlaceHolder" maxlength="@Model.MaxLenght" @(Model.IsReadOnly ? "readonly": "")>@Model.Value</textarea>
+</div>

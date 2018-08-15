@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Enter account url";
+    Texts["Explore.AccountUrl.PH"] = "Account URL";
+
+
+    var accountUrlModel = new TextModel()
+    {
+        Name = "accountUrl",
+        Value = Context.Request.GetQueryParameter("accountUrl"),
+        Label = T("Explore.AccountUrl.PH"),
+    };
+
+
+}
+<form method="get">
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", accountUrlModel)
+    <button class="btn btn-success"><i class="fa fa-chevron-right"></i></button>
+</form>
+

@@ -1,0 +1,87 @@
+﻿@model SwiftAccountDetailsResponse
+@{
+    Texts["Account.Title"] = "Account details";
+    Texts["Account.Endpoint0"] = "Endpoint: {0}";
+    Texts["Account.Objects0kBUsed1"] = "{0} objects ({1} kB used)";
+    Texts["Account.Containers"] = "Containers:";
+    Texts["Container.Objects0kBUsed1"] = "{0} objects ({1} kB used)";
+    Texts["Container.LastModif0"] = "Last modified: {0}";
+    Texts["Account.SetKey"] = "Set a new key";
+    Texts["Account.NewKeyPrompt"] = "New key (empty to remove the key)";
+    Texts["Account.NewKeyConfirm0"] = "New key: {0}";
+
+
+
+    ViewData["Title"] = T("Account.Title");
+
+    var token = TokenService.HasToken ? TokenService.Token : null;
+
+    var accountUrl = Context.Request.GetQueryParameter("accountUrl");
+    var setTempKey1Url = Url.RouteUrl(Routes.POST_SetTempKey_Route, new { accountUrl = accountUrl, number = 1 });
+    var setTempKey2Url = Url.RouteUrl(Routes.POST_SetTempKey_Route, new { accountUrl = accountUrl, number = 2 });
+}
+<style>
+    .account-containers {
+        display: flex;
+        border: #ccc 1px solid;
+        box-shadow: 0 0 14px rgba(0,0,0,0.06);
+        padding: 0.5rem;
+    }
+
+        .account-containers .account-container {
+            display: block;
+            box-shadow: 0 0 14px rgba(0,0,0,0.06);
+            padding: 0.5rem;
+            margin: 0.3rem;
+        }
+
+            .account-containers .account-container .container-name {
+                font-weight: bold;
+            }
+            .account-containers .account-container:hover {
+                cursor: pointer;
+                transform: scale(1.015);
+            }
+</style>
+<div class="alert alert-warning">
+    <h5>@T("Account.Endpoint0", accountUrl)</h5>
+    @T("Account.Objects0kBUsed1", Model.ObjectCount, Model.BytesUsed / 1024)
+    <br />
+    <div style="display:flex; justify-content:space-between">
+        <span>Temp key 1: @Model.TempKey </span><button class="btn btn-light btn-sm" data-url="@setTempKey1Url" onclick="NSC.setTempKey(this)">@T("Account.SetKey")</button>
+    </div>
+    <div style="display:flex; justify-content:space-between">
+        <span>Temp key 2: @Model.TempKey2 </span><button class="btn btn-light btn-sm" data-url="@setTempKey2Url" onclick="NSC.setTempKey(this)">@T("Account.SetKey")</button>
+    </div>
+</div>
+<h4>@T("Account.Containers")</h4>
+<div class="account-containers">
+    @foreach (var c in Model.ContentObject ?? new List<SwiftAccountDetailsResponse.ContainerObject>())
+    {
+        var containerUrl = Url.RouteUrl(Routes.GET_Explore_Route, new { accountUrl = accountUrl, container = c.Name });
+        <div class="account-container" data-url="@containerUrl">
+            <div class="container-name">@c.Name</div>
+            <div>@T("Container.Objects0kBUsed1",c.Count ,(c.Bytes / 1024))</div>
+            <div>@T("Container.LastModif0", c.Last_modified)</div>
+        </div>
+    }
+    <script>
+        $('.account-container').click(function () { var elt = $(this); var url = elt.attr('data-url'); NSC.goToUrl(url); })
+    </script>
+</div>
+<script>
+
+    NSC.Msg = NSC.Msg || {};
+    NSC.Msg.NewKeyPrompt = '@T_JS("Account.NewKeyPrompt")';
+    NSC.Msg.NewKeyConfirm = '@T_JS("Account.NewKeyConfirm0")';
+
+
+    NSC.setTempKey = function (eltHtml) {
+        var elt = $(eltHtml);
+        var url = elt.attr('data-url');
+        var newKey = prompt(NSC.Msg.NewKeyPrompt);
+        if (!confirm(NSC.Msg.NewKeyConfirm.format( newKey))) return;
+        var handlers = {}; handlers.success = function () { NSC.refresh();}
+        NSC.genericAjaxPost(url, { newKey: newKey }, handlers);
+    }
+</script>

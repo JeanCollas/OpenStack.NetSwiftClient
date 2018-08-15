@@ -1,0 +1,194 @@
+﻿@{
+    Texts["Auth.Authenticate"] = "Authenticate";
+    Texts["Auth.Authenticated"] = "Authenticated";
+    Texts["Auth.AuthenticatedWith"] = "Authenticated with {0}";
+    Texts["Auth.NotAuthenticated"] = "Not Authenticated";
+
+    Texts["Auth.Endpoint.PH"] = "Authentication V3 Endpoint";
+    Texts["Auth.SaveEndpoint.PH"] = "Save endpoint";
+    Texts["Auth.Name.PH"] = "Name";
+    Texts["Auth.SaveName.PH"] = "Save name";
+    Texts["Auth.Password.PH"] = "Password";
+    Texts["Auth.Domain.PH"] = "Domain";
+    Texts["Auth.SaveDomain.PH"] = "Save domain";
+    Texts["Auth.Authenticate"] = "Authenticate";
+    Texts["Auth.Success"] = "Authentication Successful";
+
+    var token = TokenService.HasToken ? TokenService.Token : null;
+    var authRoute = Url.RouteUrl(Routes.POST_Authenticate_JSONRoute);
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <script>var NSC = NSC || {};</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NetSwiftClient.Demo.AspNetCore</title>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+    </environment>
+
+    <link rel="stylesheet" href="~/lib/pnotify/pnotify.custom.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" 
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+    <header class="navbar navbar-dark navbar-fixed-top navbar-title navbar fixed-top navbar-expand-lg bg-dark navbar-dark">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">NetSwiftClient.Demo.AspNetCore</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+        @if (TokenService.HasToken)
+        {
+            <div class="alert alert-auth alert-info">
+                <span>@((TokenService.Token.Name.IsNullOrEmpty() ? T("Auth.Authenticated") : T("Auth.AuthenticatedWith", TokenService.Token.Name)))</span>
+                <button style="align-self:flex-end" class="btn btn-link btn-sm" data-toggle="collapse" data-target="#collapse-auth" aria-expanded="true" aria-controls="collapse-auth">
+                    <i class="fa fa-chevron-down"></i>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-auth alert-danger">
+                <span>@T("Auth.NotAuthenticated") </span>
+                <button style="align-self:flex-end" class="btn btn-link" data-toggle="collapse" data-target="#collapse-auth" aria-expanded="true" aria-controls="collapse-auth">
+                    @T("Auth.Authenticate")
+                </button>
+            </div>
+        }
+        <div id="auth-body">
+            <div id="collapse-auth" class="collapse @((TokenService.HasToken?"":"in"))" data-parent="#auth-body">
+                <div class="card-body">
+                    <form data-url="@authRoute" method="post">
+                        @{
+                            var endpointModel = new TextModel()
+                            {
+                                Name = nameof(Authenticate_POSTModel.AuthAPIV3EndPoint),
+                                Value = token?.AuthAPIV3EndPoint,
+                                Label = T("Auth.Endpoint.PH"),
+                            };
+                            var nameModel = new TextModel()
+                            {
+                                Name = nameof(Authenticate_POSTModel.Name),
+                                Value = token?.Name,
+                                Label = T("Auth.Name.PH"),
+                            };
+                            var passwordModel = new TextModel()
+                            {
+                                Name = nameof(Authenticate_POSTModel.Password),
+                                Type = "password",
+                                Label = T("Auth.Password.PH"),
+                            };
+                            var domainModel = new TextModel()
+                            {
+                                Name = nameof(Authenticate_POSTModel.Domain),
+                                Value = token?.Domain,
+                                Label = T("Auth.Domain.PH"),
+                            };
+                            var saveEndpointModel = new Checkbox3Model
+                            {
+                                Name = nameof(Authenticate_POSTModel.SaveAuthEndpoint),
+                                Id = Guid.NewGuid().ToString(),
+                                IsChecked = token?.SaveAuthEndPoint ?? true,
+                                Label = T("Auth.SaveEndpoint.PH"),
+                            };
+                            var saveNameModel = new Checkbox3Model
+                            {
+                                Name = nameof(Authenticate_POSTModel.SaveName),
+                                Id = Guid.NewGuid().ToString(),
+                                IsChecked = token?.SaveName ?? true,
+                                Label = T("Auth.SaveName.PH"),
+                            };
+                            var saveDomainModel = new Checkbox3Model
+                            {
+                                Name = nameof(Authenticate_POSTModel.SaveDomain),
+                                Id = Guid.NewGuid().ToString(),
+                                IsChecked = token?.SaveDomain ?? true,
+                                Label = T("Auth.SaveDomain.PH"),
+                            };
+                        }
+                        @await Html.PartialAsync("/Views/Fields/_Text.cshtml", endpointModel)
+                        @await Html.PartialAsync("/Views/Fields/_Checkbox3.cshtml", saveEndpointModel)
+                        @await Html.PartialAsync("/Views/Fields/_Text.cshtml", nameModel)
+                        @await Html.PartialAsync("/Views/Fields/_Checkbox3.cshtml", saveNameModel)
+                        @await Html.PartialAsync("/Views/Fields/_Text.cshtml", passwordModel)
+                        @await Html.PartialAsync("/Views/Fields/_Text.cshtml", domainModel)
+                        @await Html.PartialAsync("/Views/Fields/_Checkbox3.cshtml", saveDomainModel)
+                        <br />
+                        <br />
+                        <button class="btn btn-success w-100" onclick="NSC.sendForm(this, { success: function () { NSC.notif('@T_JS("Auth.Success")','success');NSC.refresh(); }}); return false;">@T("Auth.Authenticate")</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; 2018 - NetSwiftClient.Demo.AspNetCore</p>
+        </footer>
+    </div>
+
+    <div class="loading-page">
+        <p>loading</p>
+        <span></span><span></span><span></span>
+    </div>
+    <script>$('.loading-page').click(function (e) { $('.loading-page').removeClass('exit'); })</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <environment include="Development">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+    <script src="~/lib/pnotify/pnotify.custom.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

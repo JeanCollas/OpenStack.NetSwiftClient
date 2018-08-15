@@ -1,0 +1,28 @@
+﻿@model TextModel
+@if (Model.IncludeLabel)
+{
+<div class="form-group inputs @Model.Class @(Model.Inline?"inline":"")">
+    <label for="@(Model.Id)" style="margin:0px 0 5px 0;">
+        @((String.IsNullOrEmpty(Model.LabelKey) ? Model.Label : T(Model.LabelKey)))
+        @if (Model.IsRequired)
+        {<required />}
+    </label>
+    @if (!Model.Tip.IsNullOrEmpty())
+    {
+        <a class="tooltip-holder" title="@Model.Tip" data-toggle="tooltip"><i class="far fa-info-circle"></i><span class="tooltip-content">@Model.Tip</span></a>
+    }
+    <input @(Model.IsRequired) name="@(Model.Name)" type="@(Model.Type)" class="form-control patch-on-change" autocomplete="@(Model.AutoComplete?"on":"off")"
+           placeholder="@Model.PlaceHolder" id="@(Model.Id)" value="@Model.Value" maxlength="@Model.MaxLenght" @(Model.IsReadOnly ? "readonly" : "") />
+    <span class="input-description">@Html.Raw(Model.Description)</span>
+</div>
+}
+else
+{
+    <div class="w-100">
+        <input @(Model.IsRequired? "required":"") name="@(Model.Name)" type="@(Model.Type)" class="form-control patch-on-change" autocomplete="@(Model.AutoComplete?"on":"off")"
+               placeholder="@(Model.PlaceHolder??Model.Label) @(Model.IsRequired?"*":"")" id="@(Model.Id)" value="@Model.Value" 
+               maxlength="@Model.MaxLenght" @(Model.IsReadOnly ? "readonly": "")/>
+        <span class="input-description">@Html.Raw(Model.Description)</span>
+    </div>
+}
+

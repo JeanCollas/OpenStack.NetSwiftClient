@@ -1,0 +1,8 @@
+﻿@model RadioBoxModel
+<input id="@Model.Id" required="@(Model.IsRequired)" type="radio" class="@Model.InputClass" value="@Model.Value" name="@Model.Name" @(Model.IsChecked ? "checked=\"checked\"" : "")>
+<label for="@Model.Id" class="@Model.Class @(Model.Inline?"inline":"")">
+    <i class="checked fas fa-check-circle"></i>
+    <i class="unchecked fas fa-circle"></i>
+    @Model.Label
+</label>
+

@@ -1,0 +1,11 @@
+﻿@model Checkbox3Model
+@{ var type = Model.Type; var isCheck = type == "checkbox";var isRadio = type == "radio";}
+<input id="@Model.Id" @(Model.IsReadOnly?Html.Raw("readonly=\"readonly\""):null) type="hidden" value="@(Model.IsChecked)" 
+       class="btn-chkbox @(Model.IsChecked?"checked":"") form-control patch-on-change" 
+       name="@Model.Name" @(Html.Raw(Model.IsChecked ? "checked=\"checked\"" : ""))>
+<label for="@Model.Id" class="@Model.Class btn btn-chkbox @(Model.Inline?"inline":"")" 
+       onclick="if(@((!Model.IsReadOnly).ToString().ToLower())) NSC.switchCheckBox('#@Model.Id');">
+    <i class="checked fas @(isRadio?"fa-check-circle":"fa-check-square")"></i>
+    <i class="unchecked fas @(isRadio?"fa-circle":"fa-square")"></i>
+    <span class="btn-chkbox">@Model.Label</span>
+</label>

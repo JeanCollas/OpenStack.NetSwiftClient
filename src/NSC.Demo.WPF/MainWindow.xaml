@@ -1,0 +1,87 @@
+﻿<Window x:Class="NetSwiftClient.Demo.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetSwiftClient.Demo.WPF"
+        mc:Ignorable="d" Foreground="White" Background="Black"
+        Title="Net OpenStack Swift Client Demo" Height="603.372" Width="889.6">
+    <Grid HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" >
+
+        <TextBlock  Text="Auth API V3 endpoint" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,20,629.6,0" HorizontalAlignment="Stretch"/>
+        <TextBox Text="{Binding AuthUrl,Mode=TwoWay}" VerticalAlignment="Top" Margin="169,18,0,0" HorizontalAlignment="Left" Width="275"/>
+
+        <TextBlock  Text="Name" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,48,629.6,0" />
+        <TextBox Text="{Binding AuthName,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="169,46,0,0" Width="275"/>
+
+        <TextBlock  Text="Password" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,76,629.6,0"/>
+        <TextBox Text="{Binding AuthPassword,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="169,74,0,0" Width="275"/>
+
+        <TextBlock  Text="Domain" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,104,629.6,0" />
+        <TextBox Text="{Binding AuthDomain,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="169,102,0,0" Width="275"/>
+
+        <Button Command="{Binding AuthenticateCommand}" Content="Authenticate" HorizontalAlignment="Left" Margin="169,131,0,0" VerticalAlignment="Top" Width="275" Height="26"/>
+
+        <TextBlock  Text="Token" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,172,629.6,0" />
+        <TextBox Text="{Binding Token,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="169,172,0,0" Width="275"/>
+
+        <TextBlock  Text="Object store URL" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,200,629.6,0" />
+        <TextBox Text="{Binding ObjectStoreUrl,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="169,200,0,0" Width="275"/>
+
+        <Button Command="{Binding ListContainersCommand}" Content="List containers" HorizontalAlignment="Left" Margin="169,229,0,0" VerticalAlignment="Top" Width="275" Height="26"/>
+
+        <TextBlock  Text="Container" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,262,629.6,0" />
+        <TextBox Text="{Binding Container,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="169,262,0,0" Width="275"/>
+
+        <Button Command="{Binding ContainerInfoCommand}" Content="Container infos" HorizontalAlignment="Left" Margin="169,293,0,0" VerticalAlignment="Top" Width="275" Height="26"/>
+
+        <ListBox ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFile,Mode=TwoWay}" HorizontalAlignment="Left" Height="224" Margin="10,340,0,0" VerticalAlignment="Top" Width="274">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}" Grid.Column="0"/>
+                        </Grid>
+                        <TextBlock FontSize="10" Text="{Binding Last_modified}" Grid.Column="2"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                <TextBlock Text="{Binding Content_type}" />
+                                <TextBlock Text=" ("/>
+                                <TextBlock Text="{Binding KBytes}" />
+                                <TextBlock Text="KB)"/>
+                            </StackPanel>
+
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Button Content="Select new file" HorizontalAlignment="Left" Margin="288,343,0,0" VerticalAlignment="Top" Width="156" Height="26" Click="Button_Click"/>
+
+        <TextBlock  Text="Source" TextWrapping="Wrap" VerticalAlignment="Top" Margin="290,370,349.6,0" />
+        <TextBox Text="{Binding NewFileSource,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="290,390,0,0" Width="154"/>
+        <TextBlock  Text="New name" TextWrapping="Wrap" VerticalAlignment="Top" Margin="290,410,349.6,0" />
+        <TextBox Text="{Binding NewFileName,Mode=TwoWay}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="290,430,0,0" Width="154"/>
+
+        <Button Command="{Binding SendFileCommand}" Content="Upload file" HorizontalAlignment="Left" Margin="288,455,0,0" VerticalAlignment="Top" Width="156" Height="26"/>
+
+        <Button Command="{Binding DeleteFileCommand}" Content="Delete file" HorizontalAlignment="Left" Margin="288,500,0,0" VerticalAlignment="Top" Width="156" Height="26"/>
+
+
+
+        <ListBox Margin="474,36,9.6,9.6" ItemsSource="{Binding LogCollection}" Foreground="White" Background="DarkGray" />
+        <TextBlock HorizontalAlignment="Left" Margin="475,18,0,0" TextWrapping="Wrap" Text="{Binding Status}" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

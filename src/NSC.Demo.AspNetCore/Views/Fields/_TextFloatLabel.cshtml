@@ -1,0 +1,14 @@
+﻿@model TextModel
+<div class="form-group form-float-label @Model.Class @(Model.Inline?"inline":"")" 
+     onchange="$('input',this).toggleClass('empty',$('input',this).val()==='')">
+    <input @(Model.IsRequired? "required":"") name="@(Model.Name)" type="@(Model.Type)" class="form-control patch-on-change @(Model.Value.IsNullOrEmpty()?"empty":"")"
+           placeholder="" id="@(Model.Id)" value="@Model.Value" maxlength="@Model.MaxLenght" @(Model.IsReadOnly ? "readonly": "") 
+           autocomplete="@(Model.AutoComplete?"on":"off")"
+           @Html.Raw(!String.IsNullOrEmpty(Model.Pattern)? "pattern=\""+Model.Pattern+"\"" : "")/>
+    <span class="input-description">@Html.Raw(Model.Description)</span>
+
+    <label class="form-float-label-placeholder" for="@(Model.Id)">
+        @((String.IsNullOrEmpty(Model.LabelKey) ? Model.Label : T(Model.LabelKey)))
+        @if (Model.IsRequired){<required />}
+    </label>
+</div>
