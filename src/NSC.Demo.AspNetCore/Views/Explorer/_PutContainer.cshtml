@@ -4,6 +4,8 @@
     Texts["Account.AddContainer.Create"] = "Create container";
     Texts["Account.AddContainer.Created"] = "Container created";
 
+    Texts["Account.AddContainer.ACLInfo"] = "More details on ACL";
+
     Texts["Account.AddContainer.ContainerName"] = "Container name";
     Texts["Account.AddContainer.Headers.ContainerRead"] = "Container Read (X-Container-Read)";
     Texts["Account.AddContainer.Headers.ContainerWrite"] = "Container Write (X-Container-Write)";
@@ -66,6 +68,8 @@
         var metadataPUTModel = TextAreaModel.FromNameLabel(nameof(ContainerAdd_PUTModel.Metadata), T("Account.AddContainer.Headers.Metadata"), placeHolder: T("Account.AddContainer.Headers.Metadata.Descr"));
     }
     @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerPUTModel)
+
+    <a href="https://docs.openstack.org/swift/latest/overview_acl.html#container-acls" target="_blank">@T("Account.AddContainer.ACLInfo")</a>
     @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerReadPUTModel)
     @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerWritePUTModel)
     @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerSyncToPUTModel)
