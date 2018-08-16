@@ -14,6 +14,7 @@ Feel free to pull request, the client is not exhaustive and will get new feature
 
 Just launch the project, on first start, the site should ask for your authentication endpoint and credentials. 
 Then you may browse your account.
+
 The ASP.NET Core project demonstrates:
 - Authentication on OpenStack Identity server (the token is stored in an encrypted cookie)
 - List an account properties and its containers (in the library, account = object store)
@@ -62,6 +63,7 @@ The WPF project demonstrates:
 ## OVH
 
 OVH provides a object storage service based on the OpenStack API (OpenStack identity + swift).
+
 They propose a cheap storage, with 3x replication, quite cheap and simple prices (0.01€/month/GB + free incoming + 0.01€/outgoing GB):
 - Static hosting => Store your entire static website, all files are public
 - Public container => Store your website media, all files are public (the difference with the static hosting is unclear)
