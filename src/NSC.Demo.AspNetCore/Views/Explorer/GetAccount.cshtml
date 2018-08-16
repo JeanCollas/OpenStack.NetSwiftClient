@@ -48,8 +48,8 @@
                 transform: scale(1.015);
             }
 </style>
-<div class="alert alert-warning">
-    <h6 style="overflow-x:auto;overflow-y:hidden">@T("Account.Endpoint0", accountUrl)</h6>
+<div class="alert alert-warning" style="word-break: break-all;">
+    <h6>@T("Account.Endpoint0", accountUrl)</h6>
     <div>@T("Account.Containers0", Model.ContentObject?.Count)</div>
     <div>@T("Account.Objects0kBUsed1", Model.ObjectCount, Model.BytesUsed / 1024)</div>
     <div>@T("Info.AcceptRange0", Model.AcceptRanges)</div>

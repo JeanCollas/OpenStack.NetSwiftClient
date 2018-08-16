@@ -17,7 +17,7 @@ namespace NetSwiftClient
         Task<SwiftContainerInfoResponse> ContainerGetAsync(string objectStoreUrl, string container);
         Task<SwiftContainerInfoResponse> ContainerHeadAsync(string objectStoreUrl, string container);
         Task<SwiftBaseResponse> ContainerPostAsync(string objectStoreUrl, string container, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null);
-        Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container, Dictionary<string, string> metadata = null);
+        Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container, Dictionary<string, string> metadata = null, Dictionary<string, string> additionalHeaders = null);
         void InitToken(string token, DateTime? expiresAt = null);
         Task<SwiftBaseResponse> ObjectDeleteAsync(string objectStoreUrl, string container, string objectName);
         Task<SwiftObjectGetResponse> ObjectGetAsync(string objectStoreUrl, string container, string objectName);

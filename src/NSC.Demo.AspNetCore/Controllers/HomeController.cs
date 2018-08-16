@@ -88,14 +88,14 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
         }
 
         [HttpGet("/ObjectDownload", Name = Routes.GET_DownloadObject_Route)]
-        public async Task<IActionResult> Download(string accountUrl, string container , string objectName )
+        public async Task<IActionResult> Download(string accountUrl, string container, string objectName)
         {
-            if (!_TokenService.HasToken|| accountUrl.IsNullOrEmpty()|| container.IsNullOrEmpty()|| objectName.IsNullOrEmpty()) return RedirectToRoute(Routes.GET_Home_Route);
+            if (!_TokenService.HasToken || accountUrl.IsNullOrEmpty() || container.IsNullOrEmpty() || objectName.IsNullOrEmpty()) return RedirectToRoute(Routes.GET_Home_Route);
 
             _SwiftService.InitToken(_TokenService.Token.Token);
 
             var ss = await _SwiftService.ObjectGetAsync(accountUrl, container, objectName);
-            if(!ss.IsSuccess)
+            if (!ss.IsSuccess)
                 return RedirectToRoute(Routes.GET_Home_Route);
             if (Request.GetQueryParameter("disposition").Count > 0)
                 Response.Headers["Content-Disposition"] = Request.GetQueryParameter("disposition");
@@ -138,7 +138,7 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
         [HttpPost("/ObjectTempLink", Name = Routes.POST_TempLink_Route)]
         public async Task<IActionResult> TempLink(string accountUrl, string container, string objectName, [FromBody]ObjectCreateTempLink_POSTModel model)
         {
-            var response = new JsonResult<TempLinkResult>() { Success = false, Result =new TempLinkResult() };
+            var response = new JsonResult<TempLinkResult>() { Success = false, Result = new TempLinkResult() };
 
             if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
                 return JsonResult(response);
@@ -151,14 +151,14 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
                 return JsonResult(response);
 
             _SwiftService.InitToken(_TokenService.Token.Token);
-            var account=await _SwiftService.AccountHeadAsync(accountUrl);
+            var account = await _SwiftService.AccountHeadAsync(accountUrl);
             bool keysMissing = account.TempKey.IsNullOrEmpty() && account.TempKey2.IsNullOrEmpty();
             if (!GenericCheck(() => !keysMissing, response, StatusCodes.Status400BadRequest, SiteErrorCodes.TempUrlKeysNotSet))
                 return JsonResult(response);
 
             var key = account.TempKey.IfNullOrEmpty(account.TempKey2);
 
-            var url=_SwiftService.ObjectGetTmpUrlAsync(accountUrl, container, objectName, TimeSpan.FromMinutes(model.ValidityMinutes), key);
+            var url = _SwiftService.ObjectGetTmpUrlAsync(accountUrl, container, objectName, TimeSpan.FromMinutes(model.ValidityMinutes), key);
 
             response.Success = true;
             response.Result.Link = url;
@@ -177,21 +177,51 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
 
             if (!GenericCheck(() => !accountUrl.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidAccountUrl))
                 return JsonResult(response);
-            if (!GenericCheck(() => number==1||number==2, response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidKeyNumber))
+            if (!GenericCheck(() => number == 1 || number == 2, response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidKeyNumber))
                 return JsonResult(response);
 
-            if (!GenericCheck(() => model!=null, response, StatusCodes.Status400BadRequest, SiteErrorCodes.BadRequest))
+            if (!GenericCheck(() => model != null, response, StatusCodes.Status400BadRequest, SiteErrorCodes.BadRequest))
                 return JsonResult(response);
 
             _SwiftService.InitToken(_TokenService.Token.Token);
-            var swiftResult = await _SwiftService.AccountSetTempUrlKeyAsync(accountUrl, model.NewKey, number==1);
+            var swiftResult = await _SwiftService.AccountSetTempUrlKeyAsync(accountUrl, model.NewKey, number == 1);
 
-            if (!GenericCheck(() => swiftResult.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResult.Reason)) 
+            if (!GenericCheck(() => swiftResult.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResult.Reason))
                 return JsonResult(response);
 
             response.Success = true;
             return JsonResult(StatusCodes.Status200OK, response);
         }
+
+        public class ContainerAdd_POSTModel: NetSwiftClient.Models.SwiftContainerPutParameters
+        {
+        }
+        [HttpPut("/ContainerAdd", Name = Routes.PUT_ContainerAdd_Route)]
+        public async Task<IActionResult> NewContainer(string accountUrl, string container, [FromBody]ContainerAdd_POSTModel model)
+        {
+            var response = new JsonResult<StandardResult>() { Success = false, Result = new StandardResult() };
+
+            if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
+                return JsonResult(response);
+
+            if (!GenericCheck(() => !accountUrl.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidAccountUrl))
+                return JsonResult(response);
+            if (!GenericCheck(() => !container.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidContainer))
+                return JsonResult(response);
+
+            if (!GenericCheck(() => model != null, response, StatusCodes.Status400BadRequest, SiteErrorCodes.BadRequest))
+                return JsonResult(response);
+
+            _SwiftService.InitToken(_TokenService.Token.Token);
+            var swiftResult = await _SwiftService.ContainerPutAsync(accountUrl, container, model);
+
+            if (!GenericCheck(() => swiftResult.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResult.Reason))
+                return JsonResult(response);
+
+            response.Success = true;
+            return JsonResult(StatusCodes.Status200OK, response);
+        }
+
 
         public IActionResult About()
         {

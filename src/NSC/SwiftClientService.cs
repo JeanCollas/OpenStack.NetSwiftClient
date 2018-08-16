@@ -56,7 +56,7 @@ namespace NetSwiftClient
             => ContainerPostAsync(Config.ObjectStoreUrl, container, metaValues, additionalHeaders);
 
         public Task<SwiftBaseResponse> ContainerPutAsync(string container, Dictionary<string, string> metadata = null)
-            => ContainerPutAsync(Config.ObjectStoreUrl, container, metadata);
+            => ContainerPutAsync(Config.ObjectStoreUrl, container, metadata: metadata);
 
         #endregion Container
 

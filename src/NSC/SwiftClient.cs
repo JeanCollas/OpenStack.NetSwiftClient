@@ -184,15 +184,25 @@ namespace NetSwiftClient
             return GenericGetRequestAsync<SwiftContainerInfoResponse, List<SwiftContainerInfoResponse.ContainerFileObject>>(url);
         }
 
+
+        public Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container, SwiftContainerPutParameters prms)
+        {
+            string url = GetContainerUrl(objectStoreUrl, container, true);
+
+            var additionalHeaders = prms.GetHeaders();
+
+            return GenericPutRequestAsync<SwiftBaseResponse>(url, additionalHeaders);
+        }
+
         /// <summary>PUT Create container</summary>
         /// <param name="container">The unique (within an account) name for the container. The container name must be from 1 to 256 characters long and can start with any character and contain any pattern. Character set must be UTF-8. The container name cannot contain a slash (/) character</param>
         /// <returns>201, 202 success</returns>
         /// <returns>400, 404, 507 error</returns>
-        public Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container, Dictionary<string, string> metadata = null)
+        public Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container, Dictionary<string, string> metadata = null, Dictionary<string, string> additionalHeaders = null)
         {
             string url = GetContainerUrl(objectStoreUrl, container, true);
 
-            Dictionary<string, string> additionalHeaders = new Dictionary<string, string>();
+            additionalHeaders = additionalHeaders?? new Dictionary<string, string>();
             if (metadata != null)
                 foreach (var kvp in metadata)
                 {
