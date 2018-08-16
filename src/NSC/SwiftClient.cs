@@ -21,19 +21,18 @@ namespace NetSwiftClient
         #region Identity/Authentication
         public Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, string name, string password, string domain = "Default")
         {
-            var tokenUrl = $"{authUrl}/auth/tokens";
             var reqObj = new SwiftAuthV3Request(name, password, domain);
-            return AuthenticateAsync(tokenUrl, reqObj);
+            return AuthenticateAsync(authUrl, reqObj);
         }
         public Task<SwiftAuthV3Response> AuthenticateTokenAsync(string authUrl, string token)
         {
-            var tokenUrl = $"{authUrl}/auth/tokens";
             var reqObj = new SwiftAuthV3Request(token);
-            return AuthenticateAsync(tokenUrl, reqObj);
+            return AuthenticateAsync(authUrl, reqObj);
         }
 
-        async Task<SwiftAuthV3Response> AuthenticateAsync(string tokenUrl, SwiftAuthV3Request reqObj)
+        async Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, SwiftAuthV3Request reqObj)
         {
+            var tokenUrl = $"{authUrl}/auth/tokens";
             var contentStr = JsonConvert.SerializeObject(reqObj, new JsonSerializerSettings()
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -91,6 +90,13 @@ namespace NetSwiftClient
         {
             Token = token;
             TokenExpiresAt = expiresAt ?? DateTime.MaxValue;
+        }
+
+        // To test
+        public Task<SwiftAuthV3CatalogResponse> GetServiceCatalog(string authUrl)
+        {
+            var catalogUrl = $"{authUrl}/auth/catalog";
+            return GenericGetRequestAsync<SwiftAuthV3CatalogResponse, SwiftAuthV3CatalogResponse.CatalogObject> (catalogUrl);
         }
 
         #endregion Identity/Authentication
