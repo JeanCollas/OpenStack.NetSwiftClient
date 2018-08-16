@@ -14,6 +14,23 @@ Feel free to pull request, the client is not exhaustive and will get new feature
 
 Just launch the project, on first start, the site should ask for your authentication endpoint and credentials. 
 Then you may browse your account.
+The ASP.NET Core project demonstrates:
+- Authentication on OpenStack Identity server (the token is stored in an encrypted cookie)
+- List an account properties and its containers (in the library, account = object store)
+- Set temporary link keys to generate temporary links for objects
+- Create containers with all relevant metadata availables
+- List a container properties and its files
+- Upload files
+- Download files
+- Get files properties
+- Delete files
+- Create a temporary link to access a non-public file
+
+TODO:
+- Update container properties
+- Update file properties
+- Upload large files
+
 
 ## WPF demo project
 
@@ -35,6 +52,12 @@ Add a `DemoContext.NotIncluded.cs` file on the WPF demo project, with the follow
         }
     }
 ```
+The WPF project demonstrates:
+- Authentication on OpenStack Identity server (the token is stored in an encrypted cookie)
+- List an account properties and its containers (in the library, account = object store)
+- List a container properties and its files
+- Upload files
+- Download files
 
 ## OVH
 
