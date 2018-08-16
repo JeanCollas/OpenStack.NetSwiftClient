@@ -325,11 +325,11 @@ namespace NetSwiftClient
         public Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName, Stream data, string contentType = "application/octet-stream")
         {
             var url = GetObjectUrl(objectStoreUrl, container, objectName, true);
-            var headers = new Dictionary<string, string>()
+            var contentHeaders = new Dictionary<string, string>()
             {
                 {SwiftHeaders.ContentType,contentType }
             };
-            return GenericPutRequestAsync<SwiftBaseResponse>(url, data, headers);
+            return GenericPutRequestAsync<SwiftBaseResponse>(url, data, additionalContentHeaders: contentHeaders);
         }
 
         /// <summary>Create or replace object</summary>
@@ -556,12 +556,17 @@ namespace NetSwiftClient
         }
 
 
-        async Task<T> GenericPutRequestAsync<T>(string url, Stream content, Dictionary<string, string> additionalContentHeaders = null, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericPutRequestAsync<T>(string url, Stream content, Dictionary<string, string> additionalHeaders = null, Dictionary<string, string> additionalContentHeaders = null, bool includeToken = true) where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Put, url);
             req.FillTokenHeader(Token);
             try
             {
+
+                if (additionalHeaders != null)
+                    foreach (var h in additionalHeaders)
+                        req.Headers.Add(h.Key, h.Value);
+
                 req.Content = new StreamContent(content);
 
                 if (additionalContentHeaders != null)
@@ -588,7 +593,7 @@ namespace NetSwiftClient
             }
         }
 
-        async Task<T> GenericPutRequestAsync<T>(string url, byte[] content, Dictionary<string, string> additionalHeaders = null, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericPutRequestAsync<T>(string url, byte[] content, Dictionary<string, string> additionalHeaders = null, Dictionary<string, string> additionalContentHeaders = null, bool includeToken = true) where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Put, url);
             req.FillTokenHeader(Token);
@@ -599,6 +604,11 @@ namespace NetSwiftClient
                         req.Headers.Add(h.Key, h.Value);
 
                 req.Content = new ByteArrayContent(content);
+
+                if (additionalContentHeaders != null)
+                    foreach (var h in additionalContentHeaders)
+                        req.Content.Headers.Add(h.Key, h.Value);
+
                 var resp = await _Client.SendAsync(req);
                 //// container not found
                 //if (resp.StatusCode == HttpStatusCode.NotFound)
