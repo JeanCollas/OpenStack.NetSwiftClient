@@ -232,7 +232,6 @@ NSC.handleGenericErrors = function (resp, handlers) {
         handlers.error(resp);
 }
 
-
 String.prototype.format = function (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
     var str = this;
     if (a0 !== undefined) {

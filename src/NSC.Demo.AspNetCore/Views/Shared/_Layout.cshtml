@@ -66,9 +66,9 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="@homeRoute" >Home</a></li>
+                    <li><a href="@homeRoute">Home</a></li>
                     @*<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
                 </ul>
             </div>
         </div>
@@ -100,51 +100,20 @@
                 <div class="card-body">
                     <form data-url="@authRoute" method="post">
                         @{
-                            var endpointModel = new TextModel()
-                            {
-                                Name = nameof(Authenticate_POSTModel.AuthAPIV3EndPoint),
-                                Value = token?.AuthAPIV3EndPoint,
-                                Label = T("Auth.Endpoint.PH"),
-                            };
-                            var nameModel = new TextModel()
-                            {
-                                Name = nameof(Authenticate_POSTModel.AuthName),
-                                Value = token?.Name,
-                                Label = T("Auth.Name.PH"),
-                            };
-                            var passwordModel = new TextModel()
-                            {
-                                Name = nameof(Authenticate_POSTModel.Password),
-                                Type = "password",
-                                Label = T("Auth.Password.PH"),
-                            };
-                            var domainModel = new TextModel()
-                            {
-                                Name = nameof(Authenticate_POSTModel.Domain),
-                                Value = token?.Domain,
-                                Label = T("Auth.Domain.PH"),
-                            };
-                            var saveEndpointModel = new Checkbox3Model
-                            {
-                                Name = nameof(Authenticate_POSTModel.SaveAuthEndpoint),
-                                Id = Guid.NewGuid().ToString(),
-                                IsChecked = token?.SaveAuthEndPoint ?? true,
-                                Label = T("Auth.SaveEndpoint.PH"),
-                            };
-                            var saveNameModel = new Checkbox3Model
-                            {
-                                Name = nameof(Authenticate_POSTModel.SaveName),
-                                Id = Guid.NewGuid().ToString(),
-                                IsChecked = token?.SaveName ?? true,
-                                Label = T("Auth.SaveName.PH"),
-                            };
-                            var saveDomainModel = new Checkbox3Model
-                            {
-                                Name = nameof(Authenticate_POSTModel.SaveDomain),
-                                Id = Guid.NewGuid().ToString(),
-                                IsChecked = token?.SaveDomain ?? true,
-                                Label = T("Auth.SaveDomain.PH"),
-                            };
+                            var endpointModel = TextModel.FromNameLabel(nameof(Authenticate_POSTModel.AuthAPIV3EndPoint), T("Auth.Endpoint.PH"),
+                                value: token?.AuthAPIV3EndPoint);
+                            var nameModel = TextModel.FromNameLabel(nameof(Authenticate_POSTModel.AuthName), T("Auth.Name.PH"),
+                                value: token?.Name);
+                            var passwordModel = TextModel.FromNameLabel(nameof(Authenticate_POSTModel.Password), T("Auth.Password.PH"));
+                            passwordModel.Type = "password";
+                            var domainModel = TextModel.FromNameLabel(nameof(Authenticate_POSTModel.Domain), T("Auth.Domain.PH"),
+                                value: token?.Domain);
+                            var saveEndpointModel = Checkbox3Model.FromNameLabel(nameof(Authenticate_POSTModel.SaveAuthEndpoint), T("Auth.SaveEndpoint.PH"),
+                                token?.SaveAuthEndPoint ?? true);
+                            var saveNameModel = Checkbox3Model.FromNameLabel(nameof(Authenticate_POSTModel.SaveName), T("Auth.SaveName.PH"),
+                                isChecked: token?.SaveName ?? true);
+                            var saveDomainModel = Checkbox3Model.FromNameLabel(nameof(Authenticate_POSTModel.SaveDomain), T("Auth.SaveDomain.PH"),
+                                isChecked: token?.SaveDomain ?? true);
                         }
                         @await Html.PartialAsync("/Views/Fields/_Text.cshtml", endpointModel)
                         @await Html.PartialAsync("/Views/Fields/_Checkbox3.cshtml", saveEndpointModel)
@@ -189,5 +158,10 @@
     <script src="~/lib/pnotify/pnotify.custom.min.js"></script>
 
     @RenderSection("Scripts", required: false)
+    <script>
+        @* tooltips *@
+        $(document).ready(function () { var options = { container: 'body', boundary: 'window' }; $('[data-toggle="tooltip"]').tooltip(options); });
+    </script>
+
 </body>
 </html>

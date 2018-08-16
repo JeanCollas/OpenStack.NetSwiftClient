@@ -278,10 +278,35 @@ input.btn-radio:checked + label.btn-radio:before {
 .w-100 { width:100%;}
 
 
+.tooltip-holder .tooltip-content {
+    display: none;
+}
 
+@media (pointer:none), (pointer:coarse), (max-width: 576px) {
+    .tooltip-holder .tooltip-content {
+        display: inline-block;
+        font-size: 80%;
+        color: #ccc;
+        margin-left: 5px;
+    }
+}
+.tooltip > .tooltip-inner {
+    max-width: 80%;
+}
+
+/* Put a button on top-right of a container, e.g. for dropdown context menus */
+.btn-topright {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 22px;
+    margin-right: 0 !important;
+}
+.btn-context {
+    z-index:2;
+}
 
 /* Upload form */
-
 .upload-form input[type=file].file-autoupload {
     opacity: 0;
     overflow: hidden;

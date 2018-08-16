@@ -21,6 +21,9 @@
     <Content Update="Views\Explorer\EnterAccountUrl.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Explorer\_PutContainer.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Explorer\GetObject.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

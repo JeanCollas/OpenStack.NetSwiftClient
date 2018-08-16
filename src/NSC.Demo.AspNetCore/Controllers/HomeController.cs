@@ -193,11 +193,37 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             return JsonResult(StatusCodes.Status200OK, response);
         }
 
-        public class ContainerAdd_POSTModel: NetSwiftClient.Models.SwiftContainerPutParameters
+        public class ContainerAdd_PUTModel: NetSwiftClient.Models.SwiftContainerPutParameters
         {
+            public string Container { get; set; }
         }
         [HttpPut("/ContainerAdd", Name = Routes.PUT_ContainerAdd_Route)]
-        public async Task<IActionResult> NewContainer(string accountUrl, string container, [FromBody]ContainerAdd_POSTModel model)
+        public async Task<IActionResult> NewContainer(string accountUrl, [FromBody]ContainerAdd_PUTModel model)
+        {
+            var response = new JsonResult<StandardResult>() { Success = false, Result = new StandardResult() };
+
+            if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
+                return JsonResult(response);
+
+            if (!GenericCheck(() => !accountUrl.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidAccountUrl))
+                return JsonResult(response);
+            if (!GenericCheck(() => !model.Container.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidContainer))
+                return JsonResult(response);
+
+            if (!GenericCheck(() => model != null, response, StatusCodes.Status400BadRequest, SiteErrorCodes.BadRequest))
+                return JsonResult(response);
+
+            _SwiftService.InitToken(_TokenService.Token.Token);
+            var swiftResult = await _SwiftService.ContainerPutAsync(accountUrl, model.Container, model);
+
+            if (!GenericCheck(() => swiftResult.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResult.Reason))
+                return JsonResult(response);
+
+            response.Success = true;
+            return JsonResult(StatusCodes.Status200OK, response);
+        }
+        [HttpDelete("/ContainerDelete", Name = Routes.DELETE_DeleteContainer_Route)]
+        public async Task<IActionResult> ContainerDelete(string accountUrl, string container)
         {
             var response = new JsonResult<StandardResult>() { Success = false, Result = new StandardResult() };
 
@@ -209,11 +235,8 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             if (!GenericCheck(() => !container.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidContainer))
                 return JsonResult(response);
 
-            if (!GenericCheck(() => model != null, response, StatusCodes.Status400BadRequest, SiteErrorCodes.BadRequest))
-                return JsonResult(response);
-
             _SwiftService.InitToken(_TokenService.Token.Token);
-            var swiftResult = await _SwiftService.ContainerPutAsync(accountUrl, container, model);
+            var swiftResult = await _SwiftService.ContainerDeleteAsync(accountUrl, container);
 
             if (!GenericCheck(() => swiftResult.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResult.Reason))
                 return JsonResult(response);
@@ -221,7 +244,7 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             response.Success = true;
             return JsonResult(StatusCodes.Status200OK, response);
         }
-
+        
 
         public IActionResult About()
         {

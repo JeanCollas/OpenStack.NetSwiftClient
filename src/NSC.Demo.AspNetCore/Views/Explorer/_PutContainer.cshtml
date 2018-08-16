@@ -1,0 +1,98 @@
+﻿@model SwiftAccountDetailsResponse
+@using static NetSwiftClient.Demo.AspNetCore.Controllers.HomeController
+@{
+    Texts["Account.AddContainer.Create"] = "Create container";
+    Texts["Account.AddContainer.Created"] = "Container created";
+
+    Texts["Account.AddContainer.ContainerName"] = "Container name";
+    Texts["Account.AddContainer.Headers.ContainerRead"] = "Container Read (X-Container-Read)";
+    Texts["Account.AddContainer.Headers.ContainerWrite"] = "Container Write (X-Container-Write)";
+    Texts["Account.AddContainer.Headers.ContainerSyncTo"] = "Container Sync To (X-Container-Sync-To)";
+    Texts["Account.AddContainer.Headers.ContainerSyncKey"] = "Container Sync Key (X-Container-Sync-Key)";
+    Texts["Account.AddContainer.Headers.VersionsLocation"] = "Versions Location (X-Versions-Location)";
+    Texts["Account.AddContainer.Headers.HistoryLocation"] = "History Location (X-History-Location)";
+    Texts["Account.AddContainer.Headers.ContainerMetaAccessControlAllowOrigin"] = "ContainerMeta AccessControl AllowOrigin (X-Container-Meta-Access-Control-Allow-Origin)";
+    Texts["Account.AddContainer.Headers.ContainerMetaAccessControlMaxAge"] = "ContainerMeta AccessControl MaxAge (X-Container-Meta-Access-Control-Max-Age)";
+    Texts["Account.AddContainer.Headers.ContainerMetaAccessControlExposeHeaders"] = "ContainerMeta AccessControl ExposeHeaders (X-Container-Meta-Access-Control-Expose-Headers)";
+    Texts["Account.AddContainer.Headers.ContainerMetaQuotaBytes"] = "ContainerMeta QuotaBytes (X-Container-Meta-Quota-Bytes)";
+    Texts["Account.AddContainer.Headers.ContainerMetaQuotaCount"] = "ContainerMeta QuotaCount (X-Container-Meta-Quota-Count)";
+    Texts["Account.AddContainer.Headers.ContainerMetaTempURLKey"] = "ContainerMeta TempURLKey (X-Container-Meta-Temp-URL-Key)";
+    Texts["Account.AddContainer.Headers.ContainerMetaTempURLKey2"] = "ContainerMeta TempURLKey2 (X-Container-Meta-Temp-URL-Key-2)";
+    Texts["Account.AddContainer.Headers.TransIdExtra"] = "TransIdExtra (X-Trans-Id-Extra)";
+    Texts["Account.AddContainer.Headers.StoragePolicy"] = "Storage Policy (X-Storage-Policy)";
+    Texts["Account.AddContainer.Headers.Metadata"] = "Additional metadata (1 per line following the format 'name:value')";
+
+    Texts["Account.AddContainer.Headers.ContainerRead.Descr"] = "Sets a container access control list(ACL) that grants read access.The scope of the access is specific to the container. The ACL grants the ability to perform GET or HEAD operations on objects in the container or to perform a GET or HEAD operation on the container itself. The format and scope of the ACL is dependent on the authorization system used by the Object Storage service.See Container ACLs for more information.";
+    Texts["Account.AddContainer.Headers.ContainerWrite.Descr"] = "Sets a container access control list (ACL) that grants write access.The scope of the access is specific to the container. The ACL grants the ability to perform PUT, POST and DELETE operations on objects in the container. It does not grant write access to the container metadata. The format of the ACL is dependent on the authorization system used by the Object Storage service.See Container ACLs for more information.";
+    Texts["Account.AddContainer.Headers.ContainerSyncTo.Descr"] = "Sets the destination for container synchronization. Used with the secret key indicated in the X -Container-Sync-Key header. If you want to stop a container from synchronizing, send a blank value for the X-Container-Sync-Key header.";
+    Texts["Account.AddContainer.Headers.ContainerSyncKey.Descr"] = "Sets the secret key for container synchronization. If you remove the secret key, synchronization is halted.For more information, see Container to Container Synchronization";
+    Texts["Account.AddContainer.Headers.VersionsLocation.Descr"] = "The URL-encoded UTF-8 representation of the container that stores previous versions of objects. If neither this nor X-History-Location is set, versioning is disabled for this container.X-Versions-Location and X-History-Location cannot both be set at the same time.For more information about object versioning, see Object versioning.";
+    Texts["Account.AddContainer.Headers.HistoryLocation.Descr"] = "The URL-encoded UTF-8 representation of the container that stores previous versions of objects. If neither this nor X-Versions-Location is set, versioning is disabled for this container.X-History-Location and X-Versions-Location cannot both be set at the same time.For more information about object versioning, see Object versioning.";
+    Texts["Account.AddContainer.Headers.ContainerMetaAccessControlAllowOrigin.Descr"] = "Originating URLs allowed to make cross-origin requests(CORS), separated by spaces.This heading applies to the container only, and all objects within the container with this header applied are CORS-enabled for the allowed origin URLs. A browser (user-agent) typically issues a preflighted request , which is an OPTIONS call that verifies the origin is allowed to make the request. The Object Storage service returns 200 if the originating URL is listed in this header parameter, and issues a 401 if the originating URL is not allowed to make a cross-origin request. Once a 200 is returned, the browser makes a second request to the Object Storage service to retrieve the CORS-enabled object.";
+    Texts["Account.AddContainer.Headers.ContainerMetaAccessControlMaxAge.Descr"] = "Maximum time for the origin to hold the preflight results.A browser may make an OPTIONS call to verify the origin is allowed to make the request.Set the value to an integer number of seconds after the time that the request was received.";
+    Texts["Account.AddContainer.Headers.ContainerMetaAccessControlExposeHeaders.Descr"] = "Headers the Object Storage service exposes to the browser(technically, through the user-agent setting), in the request response, separated by spaces.By default the Object Storage service returns the following headers: All “simple response headers” as listed on http://www.w3.org/TR/cors/#simple-response-header. The headers etag, x-timestamp, x-trans-id, x-openstack-request-id. All metadata headers(X-Container-Meta-* for containers and X-Object-Meta-* for objects). headers listed in X-Container-Meta-Access-Control-Expose-Headers.";
+    Texts["Account.AddContainer.Headers.ContainerMetaQuotaBytes.Descr"] = "Sets maximum size of the container, in bytes.Typically these values are set by an administrator.Returns a 413 response (request entity too large) when an object PUT operation exceeds this quota value.This value does not take effect immediately. see Container Quotas for more information.";
+    Texts["Account.AddContainer.Headers.ContainerMetaQuotaCount.Descr"] = "Sets maximum object count of the container.Typically these values are set by an administrator. Returns a 413 response (request entity too large) when an object PUT operation exceeds this quota value.This value does not take effect immediately. see Container Quotas for more information.";
+    Texts["Account.AddContainer.Headers.ContainerMetaTempURLKey.Descr"] = "The secret key value for temporary URLs.";
+    Texts["Account.AddContainer.Headers.ContainerMetaTempURLKey2.Descr"] = "A second secret key value for temporary URLs. The second key enables you to rotate keys by having two active keys at the same time.";
+    Texts["Account.AddContainer.Headers.TransIdExtra.Descr"] = "Extra transaction information. Use the X-Trans-Id-Extra request header to include extra information to help you debug any errors that might occur with large object upload and other Object Storage transactions.The server appends the first 32 characters of the X-Trans-Id-Extra request header value to the transaction ID value in the generated X-Trans-Id response header.You must UTF-8-encode and then URL-encode the extra transaction information before you include it in the X-Trans-Id-Extra request header.For example, you can include extra transaction information when you upload large objects such as images.When you upload each segment and the manifest, include the same value in the X-Trans-Id-Extra request header.If an error occurs, you can find all requests that are related to the large object upload in the Object Storage logs. You can also use X-Trans-Id-Extra strings to help operators debug requests that fail to receive responses. The operator can search for the extra information in the logs.";
+    Texts["Account.AddContainer.Headers.StoragePolicy.Descr"] = "In requests, specifies the name of the storage policy to use for the container. In responses, is the storage policy name. The storage policy of the container cannot be changed.";
+    Texts["Account.AddContainer.Headers.Metadata.Descr"] = "The container metadata, key will be prefixed 'X-Container-Meta-', it is the name of metadata item. You must specify an X-Container-Meta-name header for each metadata item (for each name) that you want to add or update.";
+
+    var token = TokenService.HasToken ? TokenService.Token : null;
+
+    var accountUrl = Context.Request.GetQueryParameter("accountUrl");
+    var newContainerUrl = Url.RouteUrl(Routes.PUT_ContainerAdd_Route, new { accountUrl });
+}
+<form data-url="@newContainerUrl" method="put">
+    @{
+        var containerPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.Container), T("Account.AddContainer.ContainerName"));
+        containerPUTModel.IsRequired = true;
+        var containerReadPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerRead), T("Account.AddContainer.Headers.ContainerRead"), tip: T("Account.AddContainer.Headers.ContainerRead.Descr"));
+        var containerWritePUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerWrite), T("Account.AddContainer.Headers.ContainerWrite"), tip: T("Account.AddContainer.Headers.ContainerWrite.Descr"));
+        var containerSyncToPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerSyncTo), T("Account.AddContainer.Headers.ContainerSyncTo"), tip: T("Account.AddContainer.Headers.ContainerSyncTo.Descr"));
+        var containerSyncKeyPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerSyncKey), T("Account.AddContainer.Headers.ContainerSyncKey"), tip: T("Account.AddContainer.Headers.ContainerSyncKey.Descr"));
+        var versionsLocationPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.VersionsLocation), T("Account.AddContainer.Headers.VersionsLocation"), tip: T("Account.AddContainer.Headers.VersionsLocation.Descr"));
+        var historyLocationPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.HistoryLocation), T("Account.AddContainer.Headers.HistoryLocation"), tip: T("Account.AddContainer.Headers.HistoryLocation.Descr"));
+        var containerMetaAccessControlAllowOriginPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerMetaAccessControlAllowOrigin), T("Account.AddContainer.Headers.ContainerMetaAccessControlAllowOrigin"), tip: T("Account.AddContainer.Headers.ContainerMetaAccessControlAllowOrigin.Descr"));
+        var containerMetaAccessControlMaxAgePUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerMetaAccessControlMaxAge), T("Account.AddContainer.Headers.ContainerMetaAccessControlMaxAge"), tip: T("Account.AddContainer.Headers.ContainerMetaAccessControlMaxAge.Descr"));
+        var containerMetaAccessControlExposeHeadersPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerMetaAccessControlExposeHeaders), T("Account.AddContainer.Headers.ContainerMetaAccessControlExposeHeaders"), tip: T("Account.AddContainer.Headers.ContainerMetaAccessControlExposeHeaders.Descr"));
+        var containerMetaQuotaBytesPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerMetaQuotaBytes), T("Account.AddContainer.Headers.ContainerMetaQuotaBytes"), tip: T("Account.AddContainer.Headers.ContainerMetaQuotaBytes.Descr"));
+        var containerMetaQuotaCountPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerMetaQuotaCount), T("Account.AddContainer.Headers.ContainerMetaQuotaCount"), tip: T("Account.AddContainer.Headers.ContainerMetaQuotaCount.Descr"));
+        var containerMetaTempURLKeyPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerMetaTempURLKey), T("Account.AddContainer.Headers.ContainerMetaTempURLKey"), tip: T("Account.AddContainer.Headers.ContainerMetaTempURLKey.Descr"));
+        var containerMetaTempURLKey2PUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.ContainerMetaTempURLKey2), T("Account.AddContainer.Headers.ContainerMetaTempURLKey2"), tip: T("Account.AddContainer.Headers.ContainerMetaTempURLKey2.Descr"));
+        var transIdExtraPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.TransIdExtra), T("Account.AddContainer.Headers.TransIdExtra"), tip: T("Account.AddContainer.Headers.TransIdExtra.Descr"));
+        var storagePolicyPUTModel = TextModel.FromNameLabel(nameof(ContainerAdd_PUTModel.StoragePolicy), T("Account.AddContainer.Headers.StoragePolicy"), tip: T("Account.AddContainer.Headers.StoragePolicy.Descr"));
+        var metadataPUTModel = TextAreaModel.FromNameLabel(nameof(ContainerAdd_PUTModel.Metadata), T("Account.AddContainer.Headers.Metadata"), placeHolder: T("Account.AddContainer.Headers.Metadata.Descr"));
+    }
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerReadPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerWritePUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerSyncToPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerSyncKeyPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", versionsLocationPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", historyLocationPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerMetaAccessControlAllowOriginPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerMetaAccessControlMaxAgePUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerMetaAccessControlExposeHeadersPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerMetaQuotaBytesPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerMetaQuotaCountPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerMetaTempURLKeyPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", containerMetaTempURLKey2PUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", transIdExtraPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_Text.cshtml", storagePolicyPUTModel)
+    @await Html.PartialAsync("/Views/Fields/_TextArea.cshtml", metadataPUTModel)
+
+    <button id="add-container-send" class="btn btn-success w-100"  onclick="return false;" >@T("Account.AddContainer.Create")</button>
+    <script>
+        NSC.Msg = NSC.Msg || {};
+        NSC.Msg.ContainerCreated= '@T_JS("Account.AddContainer.Created")';
+        $('#add-container-send').click(function () {
+            var handlers = {
+                success : function () { NSC.notif(NSC.Msg.ContainerCreated, 'success'); NSC.refresh(); }
+            }
+            NSC.sendForm(this, handlers); return false;
+        })
+
+    </script>
+</form>

@@ -13,6 +13,7 @@ namespace NetSwiftClient.Demo.AspNetCore
         public const string POST_TempLink_Route = nameof(POST_TempLink_Route);
         public const string POST_SetTempKey_Route = nameof(POST_SetTempKey_Route);
         public const string PUT_ContainerAdd_Route = nameof(PUT_ContainerAdd_Route);
+        public const string DELETE_DeleteContainer_Route = nameof(DELETE_DeleteContainer_Route);
 
         public const string DELETE_DeleteObject_Route = nameof(DELETE_DeleteObject_Route);
         public const string POST_UploadFile_Route = nameof(POST_UploadFile_Route);
