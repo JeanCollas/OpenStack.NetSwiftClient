@@ -8,7 +8,7 @@ namespace NetSwiftClient.Models
     {
         public SwiftAuthV3Request(string name, string password, string domain = "Default")
         {
-            Auth=new AuthObject()
+            Auth = new AuthObject()
             {
                 Identity = new IdentityObject()
                 {
@@ -26,6 +26,21 @@ namespace NetSwiftClient.Models
             };
         }
 
+        public SwiftAuthV3Request(string token)
+        {
+            Auth = new AuthObject()
+            {
+                Identity = new IdentityObject()
+                {
+                    Methods = new List<string>() { "token" },
+                    Token = new TokenObject()
+                    {
+                        Id = token
+                    }
+                }
+            };
+        }
+
         public AuthObject Auth { get; set; }
 
         public class AuthObject
@@ -36,11 +51,16 @@ namespace NetSwiftClient.Models
         public class IdentityObject
         {
             public List<string> Methods { get; set; } = new List<string>();
-            public PasswordObject Password { get; set; } = new PasswordObject();
+            public PasswordObject Password { get; set; } 
+            public TokenObject Token { get; set; } 
         }
         public class PasswordObject
         {
             public UserObject User { get; set; }
+        }
+        public class TokenObject
+        {
+            public string Id { get; set; }
         }
         public class UserObject
         {

@@ -19,14 +19,27 @@ namespace NetSwiftClient
         private DateTime TokenExpiresAt { get; set; }
 
         #region Identity/Authentication
-        public async Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, string name, string password, string domain = "Default")
+        public Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, string name, string password, string domain = "Default")
         {
             var tokenUrl = $"{authUrl}/auth/tokens";
             var reqObj = new SwiftAuthV3Request(name, password, domain);
-            var content = new StringContent(JsonConvert.SerializeObject(reqObj, new JsonSerializerSettings()
+            return AuthenticateAsync(tokenUrl, reqObj);
+        }
+        public Task<SwiftAuthV3Response> AuthenticateTokenAsync(string authUrl, string token)
+        {
+            var tokenUrl = $"{authUrl}/auth/tokens";
+            var reqObj = new SwiftAuthV3Request(token);
+            return AuthenticateAsync(tokenUrl, reqObj);
+        }
+
+        async Task<SwiftAuthV3Response> AuthenticateAsync(string tokenUrl, SwiftAuthV3Request reqObj)
+        {
+            var contentStr = JsonConvert.SerializeObject(reqObj, new JsonSerializerSettings()
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            }));
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
+            });
+            var content = new StringContent(contentStr);
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
             try
             {
@@ -42,7 +55,8 @@ namespace NetSwiftClient
                         Headers = resp.Headers.ToDictionary(),
                         Reason = resp.ReasonPhrase,
                         StatusCode = resp.StatusCode,
-                        ContentObject = JsonConvert.DeserializeObject<SwiftAuthV3Response.TokenObject>(respTxt)
+                        ContentObject = JsonConvert.DeserializeObject<SwiftAuthV3Response.TokenContainerObject>(respTxt),
+                        ContentStr = respTxt
                     };
                     InitToken(result.Token, result.TokenExpires);
                     return result;
@@ -71,7 +85,6 @@ namespace NetSwiftClient
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                 };
             }
-
         }
 
         public void InitToken(string token, DateTime? expiresAt = null)

@@ -1,19 +1,73 @@
-﻿@{
+﻿@model SwiftAuthV3Response
+@{
     ViewData["Title"] = "Enter account url";
     Texts["Explore.AccountUrl.PH"] = "Account URL";
+    Texts["Explore.OrSelectAccount"] = "Or select an account";
 
 
-    var accountUrlModel = new TextModel()
-    {
-        Name = "accountUrl",
-        Value = Context.Request.GetQueryParameter("accountUrl"),
-        Label = T("Explore.AccountUrl.PH"),
-    };
-
-
+    var accountUrlModel = TextModel.FromNameLabel("accountUrl", T("Explore.AccountUrl.PH"), value:Context.Request.GetQueryParameter("accountUrl"));
 }
+
 <form method="get">
     @await Html.PartialAsync("/Views/Fields/_Text.cshtml", accountUrlModel)
     <button class="btn btn-success"><i class="fa fa-chevron-right"></i></button>
 </form>
+<br />
+<br />
+@T("Explore.OrSelectAccount")
+<form method="get">
+    @{
+        var c = Model?.ContentObject?.Token?.Catalog;
+        var dico = new Dictionary<string, List<SwiftAuthV3Response.EndpointObject>>();
+        foreach (var itm in c)
+        {
+            dico.Add(itm.Id, itm.EndPoints);
+        }
+        var swift = c.FirstOrDefault(itm => itm.Name.ToLower() == "swift");
+    }
+    <script>
+        var catalogItems = @Json.Serialize(dico);
+    </script>
+    <select id="endpointCatalog">
 
+        @foreach (var catalogItem in Model?.ContentObject?.Token?.Catalog ?? new List<SwiftAuthV3Response.CatalogItem>())
+        {
+            if (swift != null && catalogItem.Name.ToLower() == "swift")
+            {
+                <option selected value="@catalogItem.Id">@catalogItem.Name (@catalogItem.Type)</option>
+            }
+            else
+            {
+                <option value="@catalogItem.Id">@catalogItem.Name (@catalogItem.Type)</option>
+            }
+        }
+    </select>
+    <select id="endpoint" name="accountUrl">
+        @if (swift != null && swift.EndPoints != null)
+        {
+            foreach (var e in swift.EndPoints)
+            {
+                <option value="@e.Url">@e.Region @e.Interface @e.Url</option>
+            }
+        }
+    </select>
+    <button class="btn btn-success"><i class="fa fa-chevron-right"></i></button>
+</form>
+<script>
+    $('#endpointCatalog').change(function () {
+        var endPointId = $(this).val();
+        var select = $('#endpoint');
+        select.empty();
+        var items = catalogItems[endPointId];
+        $(items).each(function (idx, elt) {
+            var opt = $('<option></option>');
+            opt.html(elt.region + ' ' + elt.interface + ' ' + elt.url);
+            opt.attr('value', elt.url);
+            select.append(opt)
+        })
+    })
+</script>
+
+@*<pre>
+@Newtonsoft.Json.JsonConvert.SerializeObject(Newtonsoft.Json.JsonConvert.DeserializeObject( Model.ContentStr), Newtonsoft.Json.Formatting.Indented)
+</pre>*@

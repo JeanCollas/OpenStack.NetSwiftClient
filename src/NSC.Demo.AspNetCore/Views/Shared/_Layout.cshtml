@@ -13,11 +13,12 @@
     Texts["Auth.SaveDomain.PH"] = "Save domain";
     Texts["Auth.Authenticate"] = "Authenticate";
     Texts["Auth.Success"] = "Authentication Successful";
+    Texts["Auth.GoExplore"] = "Go to explorer";
 
     var token = TokenService.HasToken ? TokenService.Token : null;
-    var authRoute = Url.RouteUrl(Routes.POST_Authenticate_JSONRoute);
+    var authRoute = Url.RouteUrl(Routes.POST_Authenticate_Route);
     var homeRoute = Url.RouteUrl(Routes.GET_Home_Route);
-
+    var exploreUrl = Url.RouteUrl(Routes.GET_Explore_Route);
 }
 <!DOCTYPE html>
 <html>
@@ -95,7 +96,7 @@
                 </button>
             </div>
         }
-        <div id="auth-body">
+        <div id="auth-body" class="@((TokenService.HasToken?"":"not-auth"))">
             <div id="collapse-auth" class="collapse @((TokenService.HasToken?"":"show"))" data-parent="#auth-body">
                 <div class="card-body">
                     <form data-url="@authRoute" method="post">
@@ -124,8 +125,15 @@
                         @await Html.PartialAsync("/Views/Fields/_Checkbox3.cshtml", saveDomainModel)
                         <br />
                         <br />
-                        <button class="btn btn-success w-100" onclick="NSC.sendForm(this, { success: function () { NSC.notif('@T_JS("Auth.Success")','success');NSC.refresh(); }}); return false;">@T("Auth.Authenticate")</button>
+                        <button class="btn btn-success w-100" id="send-auth" onclick="NSC.sendForm(this, { success: function (resp) { NSC.notif('@T_JS("Auth.Success")','success');$('.not-auth').removeClass('.not-auth');NSC.refresh(); }}); return false;">@T("Auth.Authenticate")</button>
                     </form>
+                    <pre id="auth-response"></pre>
+                    <style>                        
+                        .not-auth .btn-goexplore {
+                            display:none;
+                        }
+                    </style>
+                    <a class="btn btn-success btn-goexplore" href="@exploreUrl">@T("Auth.GoExplore")</a>
                 </div>
             </div>
         </div>

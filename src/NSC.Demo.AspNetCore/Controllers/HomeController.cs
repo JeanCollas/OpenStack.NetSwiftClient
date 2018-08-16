@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NetSwiftClient.Demo.AspNetCore.Models;
+using Newtonsoft.Json;
 
 namespace NetSwiftClient.Demo.AspNetCore.Controllers
 {
@@ -29,7 +30,11 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
         public async Task<IActionResult> Index(string accountUrl = null, string container = null, string objectName = null)
         {
             if (!_TokenService.HasToken) return View("/Views/Home/Index.cshtml");
-            if (accountUrl.IsNullOrEmpty()) return View("/Views/Explorer/EnterAccountUrl.cshtml");
+            if (accountUrl.IsNullOrEmpty())
+            {
+                var authRes = await _SwiftService.AuthenticateTokenAsync(_TokenService.Token.AuthAPIV3EndPoint, _TokenService.Token.Token);
+                return View("/Views/Explorer/EnterAccountUrl.cshtml", authRes);
+            }
             _SwiftService.InitToken(_TokenService.Token.Token);
             if (container.IsNullOrEmpty())
             {
@@ -48,10 +53,15 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             }
         }
 
-        [HttpPost("/Authenticate", Name = Routes.POST_Authenticate_JSONRoute)]
+
+        public class AuthResult:StandardResult
+        {
+            public string AuthResponse { get; set; }
+        }
+        [HttpPost("/Authenticate", Name = Routes.POST_Authenticate_Route)]
         public async Task<IActionResult> Authenticate([FromBody]Authenticate_POSTModel model)
         {
-            var response = new JsonResult<StandardResult>() { Success = false, Result = new StandardResult() };
+            var response = new JsonResult<AuthResult>() { Success = false, Result = new AuthResult() };
 
             var valids = model.Validate();
             if (valids.Any(r => !r.Success))
@@ -81,8 +91,52 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
                 SaveDomain = model.SaveDomain,
             };
 
+            response.Result.AuthResponse = JsonConvert.SerializeObject(JsonConvert.DeserializeObject( authRes.ContentStr), Formatting.Indented);
             response.Success = true;
-            response.Result.RedirectLink = Url.RouteUrl(Routes.GET_Explore_Route);
+            //response.Result.RedirectLink = Url.RouteUrl(Routes.GET_Explore_Route);
+            return JsonResult(StatusCodes.Status200OK, response);
+
+        }
+
+        [HttpPost("/AuthenticateToken", Name = Routes.POST_AuthenticateToken_Route)]
+        public async Task<IActionResult> AuthenticateToken()
+        {
+            var response = new JsonResult<AuthResult>() { Success = false, Result = new AuthResult() };
+
+            if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
+                return JsonResult(response);
+
+            //var valids = model.Validate();
+            //if (valids.Any(r => !r.Success))
+            //{
+            //    response.ErrorCodes = valids.Where(r => !r.Success).Select(r => r.ErrorCode).ToList();
+            //    response.Success = false; response.StatusCode = StatusCodes.Status400BadRequest;
+            //    return JsonResult(response);
+            //}
+
+            var authRes = await _SwiftService.AuthenticateTokenAsync(_TokenService.Token.AuthAPIV3EndPoint, _TokenService.Token.Token);
+            if (!GenericCheck(() => authRes.IsSuccess, response, (int)authRes.StatusCode, SiteErrorCodes.InvalidCredentials))
+            {
+                response.Error += "\n" + authRes.Reason;
+                return JsonResult(response);
+            }
+
+            //// store token
+            //_TokenService.Token = new OpenStackAuthCookie()
+            //{
+            //    AuthAPIV3EndPoint = model.SaveAuthEndpoint ? model.AuthAPIV3EndPoint : null,
+            //    Name = model.SaveName ? model.AuthName : null,
+            //    Domain = model.SaveDomain ? model.Domain : null,
+            //    ExpirationTime = authRes.TokenExpires ?? DateTime.MaxValue,
+            //    Token = authRes.Token,
+            //    SaveAuthEndPoint = model.SaveAuthEndpoint,
+            //    SaveName = model.SaveName,
+            //    SaveDomain = model.SaveDomain,
+            //};
+
+            response.Result.AuthResponse = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(authRes.ContentStr), Formatting.Indented);
+            response.Success = true;
+            //response.Result.RedirectLink = Url.RouteUrl(Routes.GET_Explore_Route);
             return JsonResult(StatusCodes.Status200OK, response);
 
         }

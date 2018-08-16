@@ -51,6 +51,7 @@
                 font-weight: bold;
                 word-break: break-all;
                 hyphens: auto;
+                color:#333;
             }
             .account-containers .account-container:hover {
                 /*transform: scale(1.015);*/
@@ -110,7 +111,7 @@
     {
         var containerUrl = Url.RouteUrl(Routes.GET_Explore_Route, new { accountUrl = accountUrl, container = c.Name });
         var containerDeleteUrl = Url.RouteUrl(Routes.DELETE_DeleteContainer_Route, new { accountUrl = accountUrl, container = c.Name });
-    <div class="account-container" data-url="@containerUrl">
+    <div class="account-container">
         <div class="btn-topright btn-context">
             <div class="dropdown">
                 <div class="btn btn-light btn-sm" style="height:22px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -126,14 +127,11 @@
                 </div>
             </div>
         </div>
-        <div class="container-name">@c.Name</div>
+        <a class="container-name d-block" href="@containerUrl">@c.Name</a>
         <div>@T("Container.Objects0kBUsed1", c.Count, (c.Bytes / 1024))</div>
         <div>@T("Container.LastModif0", c.Last_modified)</div>
     </div>
     }
-    <script>
-        $('.account-container .container-name').click(function () { var elt = $(this).closest('.account-container'); var url = elt.attr('data-url'); NSC.goToUrl(url); })
-    </script>
 </div>
 <script>
 

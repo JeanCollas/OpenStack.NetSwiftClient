@@ -11,7 +11,7 @@
             <a class="tooltip-holder"><i class="fa fa-info-circle"></i><span class="tooltip-content">@Model.Tip</span></a>
         }
     </label>
-    <input @(Model.IsRequired) name="@(Model.Name)" type="@(Model.Type)" class="form-control patch-on-change" autocomplete="@(Model.AutoComplete?"on":"off")"
+    <input @((Model.IsRequired?"required":"")) name="@(Model.Name)" type="@(Model.Type)" class="form-control patch-on-change" autocomplete="@(Model.AutoComplete?"on":"off")"
            placeholder="@Model.PlaceHolder" id="@(Model.Id)" value="@Model.Value" maxlength="@Model.MaxLenght" @(Model.IsReadOnly ? "readonly" : "") />
     <span class="input-description">@Html.Raw(Model.Description)</span>
 </div>

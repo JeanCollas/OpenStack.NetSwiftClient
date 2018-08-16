@@ -7,19 +7,40 @@ namespace NetSwiftClient.Models
     public class SwiftAuthV3Response : SwiftBaseResponse
     {
         public string Token { get { string token = null; if (!Headers.TryGetValue(SwiftHeaders.AuthTokenReponse, out token)) return null; return token; } }
-        public DateTime? TokenExpires => ContentObject.Expires_at;
+        public DateTime? TokenExpires => ContentObject.Token.Expires_at;
 
         public string ContentStr { get; set; }
-        public TokenObject ContentObject { get; set; }
+        public TokenContainerObject ContentObject { get; set; }
 
+        public class TokenContainerObject
+        {
+            public TokenObject Token { get; set; }
+        }
         public class TokenObject
         {
             public List<string> Methods { get; set; }
             public DateTime? Expires_at { get; set; }
             public UserObject User { get; set; }
             public List<string> Audit_ids { get; set; }
+            public List<CatalogItem> Catalog { get; set; }
             public DateTime? Issued_at { get; set; }
         }
+        public class CatalogItem
+        {
+            public string Type { get; set; }
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public List<EndpointObject> EndPoints { get; set; }
+        }
+        public class EndpointObject
+        {
+            public string RegionId { get; set; }
+            public string Url { get; set; }
+            public string Region { get; set; }
+            public string Interface { get; set; }
+            public string Id { get; set; }
+        }
+
         public class UserObject
         {
             public DomainObject Domain { get; set; }

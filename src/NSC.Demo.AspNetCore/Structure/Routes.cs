@@ -20,6 +20,6 @@ namespace NetSwiftClient.Demo.AspNetCore
         public const string POST_UploadFiles_Route = nameof(POST_UploadFiles_Route);
 
         public const string POST_Authenticate_Route = nameof(POST_Authenticate_Route);
-        public const string POST_Authenticate_JSONRoute = nameof(POST_Authenticate_JSONRoute);
+        public const string POST_AuthenticateToken_Route = nameof(POST_AuthenticateToken_Route);
     }
 }

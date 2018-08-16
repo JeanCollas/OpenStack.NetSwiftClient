@@ -27,6 +27,7 @@ namespace NetSwiftClient
         public Task<SwiftAuthV3Response> AuthenticateAsync()
             => AuthenticateAsync(Config.AuthUrl, Config.Name, Config.Password, Config.Domain);
 
+
         #region Account
         public Task<SwiftAccountDetailsResponse> AccountListContainersAsync()
             => AccountListContainersAsync(Config.ObjectStoreUrl);
