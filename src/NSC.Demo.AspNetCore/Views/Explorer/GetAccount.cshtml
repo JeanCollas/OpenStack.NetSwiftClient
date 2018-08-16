@@ -10,6 +10,7 @@
     Texts["Account.SetKey"] = "Set a new key";
     Texts["Account.NewKeyPrompt"] = "New key (empty to remove the key)";
     Texts["Account.NewKeyConfirm0"] = "New key: {0}";
+    Texts["Info.AcceptRange0"] = "Accept-Range: {0}";
     Texts["Info.AllHeaders"] = "All headers";
 
 
@@ -51,6 +52,7 @@
     <h6 style="overflow-x:auto;overflow-y:hidden">@T("Account.Endpoint0", accountUrl)</h6>
     <div>@T("Account.Containers0", Model.ContentObject?.Count)</div>
     <div>@T("Account.Objects0kBUsed1", Model.ObjectCount, Model.BytesUsed / 1024)</div>
+    <div>@T("Info.AcceptRange0", Model.AcceptRanges)</div>
     <br />
     <div style="display:flex; justify-content:space-between">
         <span>Temp key 1: @Model.TempKey </span><button class="btn btn-light btn-sm" data-url="@setTempKey1Url" onclick="NSC.setTempKey(this)">@T("Account.SetKey")</button>

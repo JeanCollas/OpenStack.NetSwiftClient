@@ -276,3 +276,40 @@ input.btn-radio:checked + label.btn-radio:before {
  }
 
 .w-100 { width:100%;}
+
+
+
+
+/* Upload form */
+
+.upload-form input[type=file].file-autoupload {
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+    .upload-form input[type=file].file-autoupload:invalid {
+        width: 0.1px;
+        height: 0.1px;
+    }
+
+    .upload-form input[type=file].file-autoupload + label:focus,
+    .upload-form input[type=file].file-autoupload + label.has-focus,
+    .upload-form input[type=file].file-autoupload + label:hover {
+        color: #722040;
+    }
+
+.upload-form .send-files-progressbox {
+    display: none;
+}
+
+.upload-form.uploading .send-files-progressbox {
+    display: block;
+}
+
+.upload-form.uploading .form-upload {
+    display: none;
+}
+
+/* End upload form */

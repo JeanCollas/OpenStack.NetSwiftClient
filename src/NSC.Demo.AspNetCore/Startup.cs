@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +38,8 @@ namespace NetSwiftClient.Demo.AspNetCore
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<CookieTokenService>();
+            services.AddScoped<UploadService>();
+            services.AddSingleton<FileExtensionContentTypeProvider>();
 
             SwiftClientConfig swiftConfig = new SwiftClientConfig();
             Configuration.GetSection("SwiftConfig").Bind(swiftConfig);

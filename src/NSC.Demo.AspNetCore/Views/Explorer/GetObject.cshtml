@@ -16,6 +16,7 @@
     Texts["Object.ValidityLengthMin"] = "Validity length in minutes";
     Texts["Object.PleaseValidNumMin"] = "Please enter a valid number of minutes (integer)";
     Texts["Object.YourLink"] = "Your link:";
+    Texts["Info.AcceptRange0"] = "Accept-Range: {0}";
     Texts["Info.AllHeaders"] = "All headers";
     Texts["Object.FullUrl0"] = "Full URL: {0}";
 
@@ -29,6 +30,7 @@
     var objectName = Context.Request.GetQueryParameter("objectName");
     var c = Model;
     var backToAccountUrl = Url.RouteUrl(Routes.GET_Explore_Route, new { accountUrl = accountUrl });
+    var backToContainerUrl = Url.RouteUrl(Routes.GET_Explore_Route, new { accountUrl = accountUrl , container=container});
 
     var o = Model;
 
@@ -74,10 +76,10 @@
 </style>
 <div class="alert alert-warning">
     <h6><a href="@backToAccountUrl">@T("Account.Endpoint0", accountUrl)</a></h6>
-    <h6>@T("Container.Container0", container)</h6>
+    <h6><a href="@backToContainerUrl">@T("Container.Container0", container)</a></h6>
     <div>@T("Object.FullUrl0", objectDirectUrl)</div>
     @*@T("Container.Objects0kBUsed1", c., c.BytesUsed / 1024)*@
-    @c.AcceptRanges
+    <div>@T("Info.AcceptRange0", c.AcceptRanges)</div>
 
     <button style="align-self:flex-end" class="btn btn-link btn-sm" data-toggle="collapse" data-target="#all-headers" aria-expanded="true" aria-controls="all-headers">
         @T("Info.AllHeaders") <i class="fa fa-chevron-down"></i>

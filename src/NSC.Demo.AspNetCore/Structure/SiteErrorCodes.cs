@@ -22,6 +22,14 @@ namespace NetSwiftClient.Demo.AspNetCore
         public const string TempUrlKeysNotSet = "temp_keys_not_set";
         public const string InvalidKeyNumber = "invalid_key_number";
 
+
+        public const string FileTooBig = "file_too_big";
+        public const string ForbiddenContentType = "forbidden_contenttype";
+        public const string ForbiddenExtension = "forbidden_extension";
+        public const string EmptyContent = "empty_content";
+        public const string UnsupportedFormat = "unsupported_format";
+        public const string SaveFailed = "save_failed";
+
         /// <summary>
         /// Error codes: lang => code => value
         /// TODO: set an expiring cache
@@ -56,6 +64,13 @@ namespace NetSwiftClient.Demo.AspNetCore
                     case InvalidObject: { msg = "Invalid object"; return true; }
                     case TempUrlKeysNotSet: { msg = "Temporary URL keys not set"; return true; }
                     case InvalidKeyNumber: { msg = "Invalid key number"; return true; }
+
+                    case FileTooBig: { msg = "File received is too big. Maximum 2MB"; return true; }
+                    case ForbiddenContentType: { msg = "Wrong file type received"; return true; }
+                    case ForbiddenExtension: { msg = "Wrong file type received"; return true; }
+                    case EmptyContent: { msg = "Empty file received"; return true; }
+                    case UnsupportedFormat: { msg = "File format not supported."; return true; }
+                    case SaveFailed: { msg = "File failed to be saved, please try again."; return true; }
                 }
             if (lang == "fr")
             {
@@ -75,6 +90,13 @@ namespace NetSwiftClient.Demo.AspNetCore
                     case InvalidObject: { msg = "Objet invalide"; return true; }
                     case TempUrlKeysNotSet: { msg = "Clés d'URL temporaires non renseignées"; return true; }
                     case InvalidKeyNumber: { msg = "Numéro de clé invalide"; return true; }
+
+                    case FileTooBig: { msg = "Le fichier reçu dépasse la taille autorisée (2Mo maximum)"; return true; }
+                    case ForbiddenContentType: { msg = "Fichier reçu de type incorrect"; return true; }
+                    case ForbiddenExtension: { msg = "Fichier reçu de type incorrect"; return true; }
+                    case EmptyContent: { msg = "Fichier reçu vide"; return true; }
+                    case UnsupportedFormat: { msg = "Format de fichier non supporté."; return true; }
+                    case SaveFailed: { msg = "Erreur lors de l'enregistrement du fichier, merci de réessayer."; return true; }
                 }
             }
 

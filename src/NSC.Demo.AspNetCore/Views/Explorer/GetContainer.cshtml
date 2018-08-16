@@ -15,6 +15,11 @@
     Texts["Object.ValidityLengthMin"] = "Validity length in minutes";
     Texts["Object.PleaseValidNumMin"] = "Please enter a valid number of minutes (integer)";
     Texts["Object.YourLink"] = "Your link:";
+    Texts["Objects.Upload"] = "Upload";
+    Texts["Objects.FileUploading"] = "Your file is uploading...";
+    Texts["Object.Delete"] = "Delete object";
+    Texts["Object.ConfirmDelete"] = "Are you sure you want to delete this file?";
+    Texts["Info.AcceptRange0"] = "Accept-Range: {0}";
     Texts["Info.AllHeaders"] = "All headers";
 
     ViewData["Title"] = T("Container.Title");
@@ -25,6 +30,7 @@
     var container = Context.Request.GetQueryParameter("container");
     var c = Model;
     var backToAccountUrl = Url.RouteUrl(Routes.GET_Explore_Route, new { accountUrl = accountUrl });
+    var uploadFileRoute = Url.RouteUrl(Routes.POST_UploadFile_Route, new { accountUrl, container });
 }
 <style>
     .btn-topright {
@@ -34,6 +40,7 @@
         height: 22px;
         margin-right: 0 !important;
     }
+
     .container-objects {
         display: flex;
         flex-wrap: wrap;
@@ -41,6 +48,7 @@
         box-shadow: 0 0 14px rgba(0,0,0,0.06);
         padding: 0.5rem;
     }
+
         .container-objects .container-object {
             position: relative;
             display: block;
@@ -52,9 +60,11 @@
             .container-objects .container-object .object-name {
                 font-weight: bold;
             }
+
             .container-objects .container-object .object-size {
-                font-size:80%;
+                font-size: 80%;
             }
+
             .container-objects .container-object .object-modif {
                 font-size: 80%;
             }
@@ -62,6 +72,7 @@
             .container-objects .container-object:hover {
                 cursor: pointer;
                 transform: scale(1.015);
+                z-index:3;
             }
 </style>
 <div class="alert alert-warning">
@@ -69,7 +80,7 @@
     <h6>@T("Container.Container0", container)</h6>
     @T("Container.Objects0kBUsed1", c.ObjectCount, c.BytesUsed / 1024)
     @c.ContainerName
-    @c.AcceptRanges
+    <div>@T("Info.AcceptRange0", c.AcceptRanges)</div>
     <button style="align-self:flex-end" class="btn btn-link btn-sm" data-toggle="collapse" data-target="#all-headers" aria-expanded="true" aria-controls="all-headers">
         @T("Info.AllHeaders") <i class="fa fa-chevron-down"></i>
     </button>
@@ -83,51 +94,80 @@
         </div>
     </div>
 </div>
+<div class="upload-form">
+    <form class="form-upload" action="@uploadFileRoute">
+        <input type="file" required name="FileId" id="file-upload" class="file file-autoupload" accept=".jpg, .jpeg, .png, .gif" />
+        <input type="hidden" name="accountUrl" value="@accountUrl" />
+        <input type="hidden" name="container" value="@container" />
+        <label class="btn btn-primary" for="file-upload">
+            <span class="file-not-selected"><i class="fas fa-plus"></i> &nbsp; @T("Objects.Upload")</span>
+        </label>
+    </form>
+    <div class="send-files-progressbox">
+        <div class="send-file-progress progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+        </div>
+        <div class="send-file-name"></div>
+        <div class="send-file-loading">@T("Objects.FileUploading")</div>
+    </div>
+
+</div>
+
+<script>
+</script>
+
+
+
 <h4>@T("Container.Objects")</h4>
 <div class="container-objects">
     @foreach (var o in Model.ContentObject ?? new List<SwiftContainerInfoResponse.ContainerFileObject>())
     {
         var objectExploreUrl = Url.RouteUrl(Routes.GET_Explore_Route, new { accountUrl = accountUrl, container = container, objectName = o.Name });
-        var objectDownloadUrlBrowser = Url.RouteUrl(Routes.GET_DownloadObject_Route, new { accountUrl = accountUrl, container = container, objectName = o.Name , disposition="inline"});
-        var objectDownloadUrlDwl = Url.RouteUrl(Routes.GET_DownloadObject_Route, new { accountUrl = accountUrl, container = container, objectName= o.Name, disposition = "attachment" });
-        var objectDirectUrl = new UriBuilder(accountUrl +"/"+ container + "/" + o.Name );
+        var objectDownloadUrlBrowser = Url.RouteUrl(Routes.GET_DownloadObject_Route, new { accountUrl = accountUrl, container = container, objectName = o.Name, disposition = "inline" });
+        var objectDownloadUrlDwl = Url.RouteUrl(Routes.GET_DownloadObject_Route, new { accountUrl = accountUrl, container = container, objectName = o.Name, disposition = "attachment" });
+        var objectDeleteUrl = Url.RouteUrl(Routes.DELETE_DeleteObject_Route, new { accountUrl = accountUrl, container = container, objectName = o.Name});
+        var objectDirectUrl = new UriBuilder(accountUrl + "/" + container + "/" + o.Name);
         var tempLinkUrl = Url.RouteUrl(Routes.POST_TempLink_Route, new { accountUrl = accountUrl, container = container, objectName = o.Name });
-    <div class="container-object" data-url="@objectExploreUrl ">
-        <div class="btn-topright">
-            <div class="dropdown">
-                <div class="btn btn-light btn-sm" style="height:22px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-ellipsis-h" style="vertical-align:top"></i>
-                </div>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
-                    <a href="@objectExploreUrl" class="dropdown-item">
-                        <i class="fa fa-info" style="width:25px;font-size:14px;"></i> @T("Object.FileInfo")
-                    </a>
-                    <a href="@objectDirectUrl" target="_blank" class="dropdown-item">
-                        <i class="fa fa-download" style="width:25px;font-size:14px;"></i> @T("Object.DirectDownload")
-                    </a>
-                    <a href="@objectDownloadUrlDwl" target="_blank" class="dropdown-item">
-                        <i class="fa fa-cloud-download-alt" style="width:25px;font-size:14px;"></i> @T("Object.AuthDownloadDwl")
-                    </a>
-                    <a href="@objectDownloadUrlBrowser" target="_blank" class="dropdown-item">
-                        <i class="fa fa-cloud-download-alt" style="width:25px;font-size:14px;"></i> @T("Object.AuthDownloadBrowser")
-                    </a>
-                    <a href="#" class="dropdown-item" onclick="NSC.getTmpLink(this)" data-url="@tempLinkUrl">
-                        <i class="fa fa-clock" style="width:25px;font-size:14px;"></i> @T("Object.TempLink1")
-                    </a>
+        <div class="container-object" data-url="@objectExploreUrl ">
+            <div class="btn-topright">
+                <div class="dropdown">
+                    <div class="btn btn-light btn-sm" style="height:22px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h" style="vertical-align:top"></i>
+                    </div>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
+                        <a href="@objectExploreUrl" class="dropdown-item">
+                            <i class="fa fa-info" style="width:25px;font-size:14px;"></i> @T("Object.FileInfo")
+                        </a>
+                        <a href="#" data-url="@objectDeleteUrl" class="dropdown-item" onclick="NSC.deleteObject(this)">
+                            <i class="fa fa-trash" style="width:25px;font-size:14px;"></i> @T("Object.Delete")
+                        </a>
+                        <a href="@objectDirectUrl" target="_blank" class="dropdown-item">
+                            <i class="fa fa-download" style="width:25px;font-size:14px;"></i> @T("Object.DirectDownload")
+                        </a>
+                        <a href="@objectDownloadUrlDwl" target="_blank" class="dropdown-item">
+                            <i class="fa fa-cloud-download-alt" style="width:25px;font-size:14px;"></i> @T("Object.AuthDownloadDwl")
+                        </a>
+                        <a href="@objectDownloadUrlBrowser" target="_blank" class="dropdown-item">
+                            <i class="fa fa-cloud-download-alt" style="width:25px;font-size:14px;"></i> @T("Object.AuthDownloadBrowser")
+                        </a>
+                        <a href="#" class="dropdown-item" onclick="NSC.getTmpLink(this)" data-url="@tempLinkUrl">
+                            <i class="fa fa-clock" style="width:25px;font-size:14px;"></i> @T("Object.TempLink1")
+                        </a>
+                    </div>
                 </div>
             </div>
+            @*        <button class="btn btn-sm btn-light btn-topright"><i class="fa fa-ellipsis-h" style="vertical-align:top"></i></button>*@
+            <div class="object-name">@o.Name</div>
+            <div class="object-size">@T("Object.kBUsed0", (o.Bytes / 1024))</div>
+            <div class="object-modif">@T("Object.LastModif0", o.Last_modified)</div>
         </div>
-@*        <button class="btn btn-sm btn-light btn-topright"><i class="fa fa-ellipsis-h" style="vertical-align:top"></i></button>*@
-        <div class="object-name">@o.Name</div>
-        <div class="object-size">@T("Object.kBUsed0", (o.Bytes / 1024))</div>
-        <div class="object-modif">@T("Object.LastModif0", o.Last_modified)</div>
-    </div>
     }
     <script>
         NSC.Msg = NSC.Msg || {};
         NSC.Msg.NumberOfMinutes = '@T_JS("Object.ValidityLengthMin")';
         NSC.Msg.EnterValidValidity = '@T_JS("Object.PleaseValidNumMin")';
         NSC.Msg.YourLink = '@T_JS("Object.YourLink")';
+        NSC.Msg.ConfirmDelete = '@T_JS("Object.ConfirmDelete")';
 
         NSC.getTmpLink = function (eltHtml) {
             var elt = $(eltHtml);
@@ -138,6 +178,14 @@
             var handlers = {};
             handlers.success = function (res) { prompt(NSC.Msg.YourLink, res.link) }
             NSC.genericAjaxPost(url, data, handlers);
+        }
+        NSC.deleteObject = function (eltHtml) {
+            var elt = $(eltHtml);
+            var url = elt.attr('data-url');
+            if(!confirm(NSC.Msg.ConfirmDelete)) return;
+            var handlers = {};
+            handlers.success = function (res) { NSC.refresh(); }
+            NSC.genericAjaxDelete(url, null, handlers);
         }
 
         $('.account-container').click(function () { var elt = $(this); var url = elt.attr('data-url'); NSC.goToUrl(url); })

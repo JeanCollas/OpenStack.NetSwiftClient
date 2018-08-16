@@ -329,3 +329,7 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 src/NSC.Demo.WPF/DemoContext.NotIncluded.cs
+src/NSC.Demo.AspNetCore/wwwroot/css/site.min.css
+src/NSC.Demo.AspNetCore/wwwroot/js/site.min.js
+src/NSC.Demo.AspNetCore/wwwroot/js/site.min.js
+src/NSC.Demo.AspNetCore/wwwroot/css/site.min.css

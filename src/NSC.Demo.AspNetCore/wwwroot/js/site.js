@@ -334,3 +334,103 @@ NSC.switchCheckBox = function (elt2) {
     elt.val(newVal);
     elt.toggleClass('checked');
 }
+
+
+
+
+
+
+/* Upload of objects */
+
+
+// https://tympanus.net/Tutorials/CustomFileInputs/
+// https://tympanus.net/Tutorials/CustomFileInputs/js/jquery.custom-file-input.js
+$(function () {
+    // Upload files
+    $('.upload-form .file-autoupload').each(function () {
+        var input = $(this);
+        var parent = input.closest('.upload-form');
+        var label = $('.send-file-name', parent);
+        var labelVal = label.html();
+
+        input.on('change', function (e) {
+            var fileName = '';
+
+            if (this.files && this.files.length > 1)
+                fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+            else if (e.target.value)
+                fileName = e.target.value.split('\\').pop();
+
+            if (fileName) {
+                label.html(fileName);
+            }
+            else {
+                label.html(labelVal);
+            }
+        });
+
+        var removeFile = $('.remove-selected-file', label);
+        removeFile.click(function (e) {
+            input.value = ''; e.preventDefault(); return false;
+        });
+
+        // Firefox bug fix
+        input
+            .on('focus', function () { input.addClass('has-focus'); })
+            .on('blur', function () { input.removeClass('has-focus'); });
+    });
+
+    $('.nav-link.docs').addClass('active');
+});
+
+$(function () {
+    var files = $('.upload-form .file-autoupload');
+
+    var onStart = function (file, inputElt) {
+        $(inputElt).closest('.upload-form').removeClass('onerror');
+        $(inputElt).closest('.upload-form').addClass('uploading');
+        var bar = $('.send-file-progress .progress-bar', $(inputElt).closest('.upload-form'));
+        bar.css('width', '0%');
+    };
+    var onEnd = function (e, file, inputElt, success) {
+        var resp = {};
+        if (e.target && e.target.responseText) {
+            resp = JSON.parse(e.target.responseText);
+        }
+
+        if (success && resp.success && resp.result) {
+            $('.upload-form', file).removeClass('onerror');
+            $('.upload-form', file).removeClass('uploading');
+            NSC.refresh();
+        } else {
+            inputElt.value = '';
+            $('.upload-form', inputElt).addClass('onerror')
+            $('.upload-form', inputElt).removeClass('uploading')
+
+            NSC.handleGenericErrors(resp, null);
+
+        }
+    };
+    var onProgress = function (e, file, inputElt, progress) {
+        var bar = $('.send-file-progress .progress-bar', $(inputElt).closest('.upload-form'));
+        bar.css('width', '' + (progress * 0.9) + '%');
+    };
+    var onSuccess = function (e, file, inputElt, success) { }
+
+    files.each(function (idx, htmlelt) {
+        var file = $(htmlelt);
+        var form = file.closest('form');
+        file.html5Uploader({
+            name: 'file',
+            postUrl: form.attr('action'),
+            onStart: onStart,
+            onProgress: onProgress,
+            onEnd: onEnd,
+            onSuccess: null
+        });
+
+    })
+});
+
+
+/* End Upload of objects */

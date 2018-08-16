@@ -105,8 +105,34 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             return File(ss.ObjectStreamContent, ss.ContentType.IfNullOrEmpty("application/octet-stream"), objectName);
         }
 
+        [HttpDelete("/ObjectDelete", Name = Routes.DELETE_DeleteObject_Route)]
+        public async Task<IActionResult> Delete(string accountUrl, string container, string objectName)
+        {
+            var response = new JsonResult<StandardResult>() { Success = false, Result = new StandardResult() };
 
-        class TempLinkResult: StandardResult { public string Link { get; set; } }
+            if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
+                return JsonResult(response);
+
+            if (!GenericCheck(() => !accountUrl.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidAccountUrl))
+                return JsonResult(response);
+            if (!GenericCheck(() => !container.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidContainer))
+                return JsonResult(response);
+            if (!GenericCheck(() => !objectName.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidObject))
+                return JsonResult(response);
+
+            _SwiftService.InitToken(_TokenService.Token.Token);
+
+            var swiftResp = await _SwiftService.ObjectDeleteAsync(accountUrl, container, objectName);
+
+            if (!GenericCheck(() => swiftResp.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResp.Reason))
+                return JsonResult(response);
+
+            response.Success = true;
+            return JsonResult(StatusCodes.Status200OK, response);
+        }
+
+
+        class TempLinkResult : StandardResult { public string Link { get; set; } }
 
         public class ObjectCreateTempLink_POSTModel { public int ValidityMinutes { get; set; } }
         [HttpPost("/ObjectTempLink", Name = Routes.POST_TempLink_Route)]
