@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NetSwiftClient.Demo.AspNetCore.Models;
+using NetSwiftClient.Models;
 using Newtonsoft.Json;
 
 namespace NetSwiftClient.Demo.AspNetCore.Controllers
@@ -53,171 +54,6 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             }
         }
 
-
-        public class AuthResult:StandardResult
-        {
-            public string AuthResponse { get; set; }
-        }
-        [HttpPost("/Authenticate", Name = Routes.POST_Authenticate_Route)]
-        public async Task<IActionResult> Authenticate([FromBody]Authenticate_POSTModel model)
-        {
-            var response = new JsonResult<AuthResult>() { Success = false, Result = new AuthResult() };
-
-            var valids = model.Validate();
-            if (valids.Any(r => !r.Success))
-            {
-                response.ErrorCodes = valids.Where(r => !r.Success).Select(r => r.ErrorCode).ToList();
-                response.Success = false; response.StatusCode = StatusCodes.Status400BadRequest;
-                return JsonResult(response);
-            }
-
-            var authRes = await _SwiftService.AuthenticateAsync(model.AuthAPIV3EndPoint, model.AuthName, model.Password, model.Domain);
-            if (!GenericCheck(() => authRes.IsSuccess, response, (int)authRes.StatusCode, SiteErrorCodes.InvalidCredentials))
-            {
-                response.Error += "\n" + authRes.Reason;
-                return JsonResult(response);
-            }
-
-            // store token
-            _TokenService.Token = new OpenStackAuthCookie()
-            {
-                AuthAPIV3EndPoint = model.SaveAuthEndpoint ? model.AuthAPIV3EndPoint : null,
-                Name = model.SaveName ? model.AuthName : null,
-                Domain = model.SaveDomain ? model.Domain : null,
-                ExpirationTime = authRes.TokenExpires ?? DateTime.MaxValue,
-                Token = authRes.Token,
-                SaveAuthEndPoint = model.SaveAuthEndpoint,
-                SaveName = model.SaveName,
-                SaveDomain = model.SaveDomain,
-            };
-
-            response.Result.AuthResponse = JsonConvert.SerializeObject(JsonConvert.DeserializeObject( authRes.ContentStr), Formatting.Indented);
-            response.Success = true;
-            //response.Result.RedirectLink = Url.RouteUrl(Routes.GET_Explore_Route);
-            return JsonResult(StatusCodes.Status200OK, response);
-
-        }
-
-        [HttpPost("/AuthenticateToken", Name = Routes.POST_AuthenticateToken_Route)]
-        public async Task<IActionResult> AuthenticateToken()
-        {
-            var response = new JsonResult<AuthResult>() { Success = false, Result = new AuthResult() };
-
-            if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
-                return JsonResult(response);
-
-            //var valids = model.Validate();
-            //if (valids.Any(r => !r.Success))
-            //{
-            //    response.ErrorCodes = valids.Where(r => !r.Success).Select(r => r.ErrorCode).ToList();
-            //    response.Success = false; response.StatusCode = StatusCodes.Status400BadRequest;
-            //    return JsonResult(response);
-            //}
-
-            var authRes = await _SwiftService.AuthenticateTokenAsync(_TokenService.Token.AuthAPIV3EndPoint, _TokenService.Token.Token);
-            if (!GenericCheck(() => authRes.IsSuccess, response, (int)authRes.StatusCode, SiteErrorCodes.InvalidCredentials))
-            {
-                response.Error += "\n" + authRes.Reason;
-                return JsonResult(response);
-            }
-
-            //// store token
-            //_TokenService.Token = new OpenStackAuthCookie()
-            //{
-            //    AuthAPIV3EndPoint = model.SaveAuthEndpoint ? model.AuthAPIV3EndPoint : null,
-            //    Name = model.SaveName ? model.AuthName : null,
-            //    Domain = model.SaveDomain ? model.Domain : null,
-            //    ExpirationTime = authRes.TokenExpires ?? DateTime.MaxValue,
-            //    Token = authRes.Token,
-            //    SaveAuthEndPoint = model.SaveAuthEndpoint,
-            //    SaveName = model.SaveName,
-            //    SaveDomain = model.SaveDomain,
-            //};
-
-            response.Result.AuthResponse = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(authRes.ContentStr), Formatting.Indented);
-            response.Success = true;
-            //response.Result.RedirectLink = Url.RouteUrl(Routes.GET_Explore_Route);
-            return JsonResult(StatusCodes.Status200OK, response);
-
-        }
-
-        [HttpGet("/ObjectDownload", Name = Routes.GET_DownloadObject_Route)]
-        public async Task<IActionResult> Download(string accountUrl, string container, string objectName)
-        {
-            if (!_TokenService.HasToken || accountUrl.IsNullOrEmpty() || container.IsNullOrEmpty() || objectName.IsNullOrEmpty()) return RedirectToRoute(Routes.GET_Home_Route);
-
-            _SwiftService.InitToken(_TokenService.Token.Token);
-
-            var ss = await _SwiftService.ObjectGetAsync(accountUrl, container, objectName);
-            if (!ss.IsSuccess)
-                return RedirectToRoute(Routes.GET_Home_Route);
-            if (Request.GetQueryParameter("disposition").Count > 0)
-                Response.Headers["Content-Disposition"] = Request.GetQueryParameter("disposition");
-            Response.ContentType = ss.ContentType;
-            Response.ContentLength = ss.ContentLength;
-
-            return File(ss.ObjectStreamContent, ss.ContentType.IfNullOrEmpty("application/octet-stream"), objectName);
-        }
-
-        [HttpDelete("/ObjectDelete", Name = Routes.DELETE_DeleteObject_Route)]
-        public async Task<IActionResult> Delete(string accountUrl, string container, string objectName)
-        {
-            var response = new JsonResult<StandardResult>() { Success = false, Result = new StandardResult() };
-
-            if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
-                return JsonResult(response);
-
-            if (!GenericCheck(() => !accountUrl.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidAccountUrl))
-                return JsonResult(response);
-            if (!GenericCheck(() => !container.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidContainer))
-                return JsonResult(response);
-            if (!GenericCheck(() => !objectName.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidObject))
-                return JsonResult(response);
-
-            _SwiftService.InitToken(_TokenService.Token.Token);
-
-            var swiftResp = await _SwiftService.ObjectDeleteAsync(accountUrl, container, objectName);
-
-            if (!GenericCheck(() => swiftResp.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResp.Reason))
-                return JsonResult(response);
-
-            response.Success = true;
-            return JsonResult(StatusCodes.Status200OK, response);
-        }
-
-
-        class TempLinkResult : StandardResult { public string Link { get; set; } }
-
-        public class ObjectCreateTempLink_POSTModel { public int ValidityMinutes { get; set; } }
-        [HttpPost("/ObjectTempLink", Name = Routes.POST_TempLink_Route)]
-        public async Task<IActionResult> TempLink(string accountUrl, string container, string objectName, [FromBody]ObjectCreateTempLink_POSTModel model)
-        {
-            var response = new JsonResult<TempLinkResult>() { Success = false, Result = new TempLinkResult() };
-
-            if (!GenericCheck(() => _TokenService.HasToken, response, StatusCodes.Status401Unauthorized, SiteErrorCodes.NotAuthorized))
-                return JsonResult(response);
-
-            if (!GenericCheck(() => !accountUrl.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidAccountUrl))
-                return JsonResult(response);
-            if (!GenericCheck(() => !container.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidContainer))
-                return JsonResult(response);
-            if (!GenericCheck(() => !objectName.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidObject))
-                return JsonResult(response);
-
-            _SwiftService.InitToken(_TokenService.Token.Token);
-            var account = await _SwiftService.AccountHeadAsync(accountUrl);
-            bool keysMissing = account.TempKey.IsNullOrEmpty() && account.TempKey2.IsNullOrEmpty();
-            if (!GenericCheck(() => !keysMissing, response, StatusCodes.Status400BadRequest, SiteErrorCodes.TempUrlKeysNotSet))
-                return JsonResult(response);
-
-            var key = account.TempKey.IfNullOrEmpty(account.TempKey2);
-
-            var url = _SwiftService.ObjectGetTmpUrlAsync(accountUrl, container, objectName, TimeSpan.FromMinutes(model.ValidityMinutes), key);
-
-            response.Success = true;
-            response.Result.Link = url;
-            return JsonResult(StatusCodes.Status200OK, response);
-        }
 
 
         public class AccountSetTempKey_POSTModel { public string NewKey { get; set; } }
@@ -276,8 +112,10 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             response.Success = true;
             return JsonResult(StatusCodes.Status200OK, response);
         }
-        [HttpDelete("/ContainerDelete", Name = Routes.DELETE_DeleteContainer_Route)]
-        public async Task<IActionResult> ContainerDelete(string accountUrl, string container)
+
+        [HttpDelete("/Delete/{container}/{objectName}", Name = Routes.DELETE_DeleteObject_Route)]
+        [HttpDelete("/Delete/{container}", Name = Routes.DELETE_DeleteContainer_Route)]
+        public async Task<IActionResult> Delete(string accountUrl, string container, string objectName=null)
         {
             var response = new JsonResult<StandardResult>() { Success = false, Result = new StandardResult() };
 
@@ -288,9 +126,19 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
                 return JsonResult(response);
             if (!GenericCheck(() => !container.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidContainer))
                 return JsonResult(response);
+            //if (!GenericCheck(() => !objectName.IsNullOrEmpty(), response, StatusCodes.Status400BadRequest, SiteErrorCodes.InvalidObject))
+            //    return JsonResult(response);
 
             _SwiftService.InitToken(_TokenService.Token.Token);
-            var swiftResult = await _SwiftService.ContainerDeleteAsync(accountUrl, container);
+
+            SwiftBaseResponse swiftResult;
+            
+            if(objectName.IsNullOrEmpty()) 
+                // If object name is empty then it is a delete on container. If the container is not empty, it will fail.
+                swiftResult = await _SwiftService.ContainerDeleteAsync(accountUrl, container);
+            else 
+                // If object name not empty, try to delete the file.
+                swiftResult = await _SwiftService.ObjectDeleteAsync(accountUrl, container, objectName);
 
             if (!GenericCheck(() => swiftResult.IsSuccess, response, StatusCodes.Status400BadRequest, swiftResult.Reason))
                 return JsonResult(response);
@@ -298,7 +146,8 @@ namespace NetSwiftClient.Demo.AspNetCore.Controllers
             response.Success = true;
             return JsonResult(StatusCodes.Status200OK, response);
         }
-        
+
+
 
         public IActionResult About()
         {

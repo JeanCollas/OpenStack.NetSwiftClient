@@ -14,6 +14,7 @@ namespace NetSwiftClient
     public class SwiftClientService : SwiftClient
     {
         public SwiftClientConfig Config { get; set; }
+        public string ObjectStoreUrl => Config?.ObjectStoreUrl;
         public string Token { get; set; }
         /// <summary>If no config is provided</summary>
         public SwiftClientService()

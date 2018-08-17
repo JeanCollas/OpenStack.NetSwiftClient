@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27323.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetSwiftClient", "NSC\NetSwiftClient.csproj", "{F1FE863B-8334-4C85-AE5E-A271AC0A3213}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetSwiftClient.Demo.AspNetCore", "NSC.Demo.AspNetCore\NetSwiftClient.Demo.AspNetCore.csproj", "{854B5D4D-738F-471B-A872-835653D02C3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSwiftClient.Demo.WPF", "NSC.Demo.WPF\NetSwiftClient.Demo.WPF.csproj", "{F7A7DBF0-B334-4C54-A5A2-7445F13BD133}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetSwiftClient", "NSC\NetSwiftClient.csproj", "{CC33B7C7-C041-4777-9CFE-84D138F5EB21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F1FE863B-8334-4C85-AE5E-A271AC0A3213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1FE863B-8334-4C85-AE5E-A271AC0A3213}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1FE863B-8334-4C85-AE5E-A271AC0A3213}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1FE863B-8334-4C85-AE5E-A271AC0A3213}.Release|Any CPU.Build.0 = Release|Any CPU
 		{854B5D4D-738F-471B-A872-835653D02C3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{854B5D4D-738F-471B-A872-835653D02C3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{854B5D4D-738F-471B-A872-835653D02C3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{F7A7DBF0-B334-4C54-A5A2-7445F13BD133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7A7DBF0-B334-4C54-A5A2-7445F13BD133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7A7DBF0-B334-4C54-A5A2-7445F13BD133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC33B7C7-C041-4777-9CFE-84D138F5EB21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC33B7C7-C041-4777-9CFE-84D138F5EB21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC33B7C7-C041-4777-9CFE-84D138F5EB21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC33B7C7-C041-4777-9CFE-84D138F5EB21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
