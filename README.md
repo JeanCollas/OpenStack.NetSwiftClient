@@ -31,6 +31,7 @@ TODO:
 - Update container properties
 - Update file properties
 - Upload large files
+- Manage containers ACL
 
 
 ## WPF demo project
