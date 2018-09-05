@@ -6,7 +6,7 @@ namespace NetSwiftClient.Models
 {
     public class SwiftAuthV3Request
     {
-        public SwiftAuthV3Request(string name, string password, string domain = "Default", IScopeObject scope=null)
+        public SwiftAuthV3Request(string name, string password, string domain = "Default", IScopeDescriptorObject scope = null)
         {
             Auth = new AuthObject()
             {
@@ -23,7 +23,7 @@ namespace NetSwiftClient.Models
                         }
                     }
                 },
-                Scope = scope
+                Scope = new ScopeObject(scope)
             };
         }
 
@@ -67,13 +67,13 @@ namespace NetSwiftClient.Models
         public class AuthObject
         {
             public IdentityObject Identity { get; set; }
-            public IScopeObject Scope { get; set; }
+            public ScopeObject Scope { get; set; }
         }
         public class IdentityObject
         {
             public List<string> Methods { get; set; } = new List<string>();
-            public PasswordObject Password { get; set; } 
-            public TokenObject Token { get; set; } 
+            public PasswordObject Password { get; set; }
+            public TokenObject Token { get; set; }
         }
         public class PasswordObject
         {
@@ -90,18 +90,31 @@ namespace NetSwiftClient.Models
             public DomainObject Domain { get; set; }
 
         }
-        public class DomainObject : IScopeObject
+        public class DomainObject : IScopeDescriptorObject
         {
             public string Id { get; set; }
             public string Name { get; set; }
         }
 
-        public interface IScopeObject { }
-        public class SystemObject: IScopeObject
+        public class ScopeObject
+        {
+            public ScopeObject(IScopeDescriptorObject scope = null)
+            {
+                System = scope as SystemObject;
+                Project = scope as ProjectObject;
+                Domain = scope as DomainObject;
+            }
+
+            public SystemObject System { get; set; }
+            public ProjectObject Project { get; set; }
+            public DomainObject Domain { get; set; }
+        }
+        public interface IScopeDescriptorObject { }
+        public class SystemObject : IScopeDescriptorObject
         {
             public bool? All { get; set; }
         }
-        public class ProjectObject: IScopeObject
+        public class ProjectObject : IScopeDescriptorObject
         {
             public string Id { get; set; }
             public string Name { get; set; }
