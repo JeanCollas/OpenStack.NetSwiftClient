@@ -24,6 +24,10 @@ namespace NetSwiftClient.Models
             public List<string> Audit_ids { get; set; }
             public List<CatalogItem> Catalog { get; set; }
             public DateTime? Issued_at { get; set; }
+
+            public SystemObject System { get; set; }
+            public DomainObject Domain { get; set; }
+            public ProjectObject Project { get; set; }
         }
         public class CatalogItem
         {
@@ -53,6 +57,18 @@ namespace NetSwiftClient.Models
             public string Id { get; set; }
             public string Name { get; set; }
         }
+
+        public class SystemObject
+        {
+            public bool All { get; set; }
+        }
+        public class ProjectObject
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public DomainObject Domain { get; set; }
+        }
+
     }
 }
 

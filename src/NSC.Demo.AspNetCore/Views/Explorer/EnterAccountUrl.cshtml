@@ -19,11 +19,11 @@
     @{
         var c = Model?.ContentObject?.Token?.Catalog;
         var dico = new Dictionary<string, List<SwiftAuthV3Response.EndpointObject>>();
-        foreach (var itm in c)
+        foreach (var itm in c??new List<SwiftAuthV3Response.CatalogItem>())
         {
             dico.Add(itm.Id, itm.EndPoints);
         }
-        var swift = c.FirstOrDefault(itm => itm.Name.ToLower() == "swift");
+        var swift = c?.FirstOrDefault(itm => itm.Name.ToLower() == "swift");
     }
     <script>
         var catalogItems = @Json.Serialize(dico);

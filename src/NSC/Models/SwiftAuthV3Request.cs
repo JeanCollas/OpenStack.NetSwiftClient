@@ -6,6 +6,27 @@ namespace NetSwiftClient.Models
 {
     public class SwiftAuthV3Request
     {
+        public SwiftAuthV3Request(string name, string password, string domain = "Default", IScopeObject scope=null)
+        {
+            Auth = new AuthObject()
+            {
+                Identity = new IdentityObject()
+                {
+                    Methods = new List<string>() { "password" },
+                    Password = new PasswordObject()
+                    {
+                        User = new UserObject()
+                        {
+                            Name = name,
+                            Password = password,
+                            Domain = new DomainObject() { Name = domain }
+                        }
+                    }
+                },
+                Scope = scope
+            };
+        }
+
         public SwiftAuthV3Request(string name, string password, string domain = "Default")
         {
             Auth = new AuthObject()
@@ -46,7 +67,7 @@ namespace NetSwiftClient.Models
         public class AuthObject
         {
             public IdentityObject Identity { get; set; }
-
+            public IScopeObject Scope { get; set; }
         }
         public class IdentityObject
         {
@@ -69,9 +90,22 @@ namespace NetSwiftClient.Models
             public DomainObject Domain { get; set; }
 
         }
-        public class DomainObject
+        public class DomainObject : IScopeObject
         {
-            public string Name { get; internal set; }
+            public string Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public interface IScopeObject { }
+        public class SystemObject: IScopeObject
+        {
+            public bool? All { get; set; }
+        }
+        public class ProjectObject: IScopeObject
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public DomainObject Domain { get; set; }
         }
     }
 

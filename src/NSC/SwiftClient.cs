@@ -30,7 +30,7 @@ namespace NetSwiftClient
             return AuthenticateAsync(authUrl, reqObj);
         }
 
-        async Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, SwiftAuthV3Request reqObj)
+        public async Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, SwiftAuthV3Request reqObj)
         {
             var tokenUrl = $"{authUrl}/auth/tokens";
             var contentStr = JsonConvert.SerializeObject(reqObj, new JsonSerializerSettings()
@@ -96,7 +96,7 @@ namespace NetSwiftClient
         public Task<SwiftAuthV3CatalogResponse> GetServiceCatalog(string authUrl)
         {
             var catalogUrl = $"{authUrl}/auth/catalog";
-            return GenericGetRequestAsync<SwiftAuthV3CatalogResponse, SwiftAuthV3CatalogResponse.CatalogObject> (catalogUrl);
+            return GenericGetRequestAsync<SwiftAuthV3CatalogResponse, SwiftAuthV3CatalogResponse.CatalogObject>(catalogUrl);
         }
 
         #endregion Identity/Authentication
@@ -156,7 +156,7 @@ namespace NetSwiftClient
         /// </param>
         /// <param name="additionalHeaders">Will add headers {Key}:{Value}</param>
         /// <returns></returns>
-        public Task<SwiftBaseResponse> AccountPostAsync(string objectStoreUrl, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders=null)
+        public Task<SwiftBaseResponse> AccountPostAsync(string objectStoreUrl, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
         {
             string url = GetStorageUrl(objectStoreUrl, true);
 
@@ -221,7 +221,7 @@ namespace NetSwiftClient
         {
             string url = GetContainerUrl(objectStoreUrl, container, true);
 
-            additionalHeaders = additionalHeaders?? new Dictionary<string, string>();
+            additionalHeaders = additionalHeaders ?? new Dictionary<string, string>();
             if (metadata != null)
                 foreach (var kvp in metadata)
                 {
@@ -320,7 +320,7 @@ namespace NetSwiftClient
 
             // GET HEAD PUT POST DELETE
             var method = "GET";
-            var expires =((int) (DateTime.UtcNow.Add(expiresIn) - new DateTime(1970, 1, 1)).TotalSeconds).ToString();// DateTime.UtcNow.Add(expiresIn).ToString("yyyy-MM-ddTHH:mm:ssK");
+            var expires = ((int)(DateTime.UtcNow.Add(expiresIn) - new DateTime(1970, 1, 1)).TotalSeconds).ToString();// DateTime.UtcNow.Add(expiresIn).ToString("yyyy-MM-ddTHH:mm:ssK");
             var hmacBody = $"{method}\n{expires}\n{new Uri(url).PathAndQuery}";
             if (!ipRange.IsNullOrEmpty()) hmacBody = $"ip={ipRange}\n" + hmacBody;
             var sig = hmacBody.GenerateHMACSHA1SignatureHexDigest(objectStoreKey);
@@ -363,7 +363,7 @@ namespace NetSwiftClient
 
         /// <summary>Create or replace object</summary>
         /// PUT /v1/{account}/{container}/{object}
-        public Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName, byte[] data,string contentType = "application/octet-stream")
+        public Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName, byte[] data, string contentType = "application/octet-stream")
         {
             var url = GetObjectUrl(objectStoreUrl, container, objectName, true);
 
