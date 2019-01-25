@@ -13,7 +13,7 @@ NSC.Tools = NSC.Tools || {};
 $(document).ready(function () { $('input').not("[type='button']").keydown(function (event) { if (event.keyCode === 13) { event.preventDefault(); return false; } }); });
 
 
-NSC.loadingFunctions = NSC.loadingFunctions || {}
+NSC.loadingFunctions = NSC.loadingFunctions || {};
 // Only takes one call into account
 NSC.loadingFunctions.ajaxStart = NSC.loadingFunctions.ajaxStart || []; NSC.loadingFunctions.ajaxStart.push(function () { $('body').addClass('ajax-loading'); });
 NSC.loadingFunctions.ajaxEnd = NSC.loadingFunctions.ajaxEnd || []; NSC.loadingFunctions.ajaxEnd.push(function () { $('body').removeClass('ajax-loading'); });
@@ -21,12 +21,12 @@ NSC.loadingFunctions.callAjaxStart = function () {
     if (NSC.loadingFunctions.ajaxStart)
         for (var i = 0; i < NSC.loadingFunctions.ajaxStart.length; i++)
             NSC.loadingFunctions.ajaxStart[i]();
-}
+};
 NSC.loadingFunctions.callAjaxEnd = function () {
     if (NSC.loadingFunctions.ajaxEnd)
         for (var i = 0; i < NSC.loadingFunctions.ajaxEnd.length; i++)
             NSC.loadingFunctions.ajaxEnd[i]();
-}
+};
 $(document).on({
     ajaxStart: function () {
         NSC.loadingFunctions.callAjaxStart();
@@ -47,9 +47,9 @@ NSC.goToUrl = function (url) {
     window.location = url;
     $('.loading-page').addClass('exit');
     window.scrollTo(0, 0);
-}
+};
 
-NSC.refresh = function () { window.location.reload(true); }
+NSC.refresh = function () { window.location.reload(true); };
 NSC.serializeForm = function (form) {
     var data = form.serializeArray().reduce(function (obj, item) {
         if (!obj[item.name]) obj[item.name] = item.value;
@@ -67,7 +67,7 @@ NSC.serializeForm = function (form) {
         return obj;
     }, {});
     return data;
-}
+};
 
 NSC.notif = function (text, type, title, delay) {
     // type:  'notice', 'info', 'success', 'error'.
@@ -81,7 +81,7 @@ NSC.notif = function (text, type, title, delay) {
     } else {
         new PNotify({ text: text });
     }
-}
+};
 
 NSC.confirmNotify = function (title, text, type, confirm, cancel) {
     var notice = new PNotify({
@@ -103,12 +103,12 @@ NSC.confirmNotify = function (title, text, type, confirm, cancel) {
     notice.get().on('click', function (e) { e.stopPropagation(); })
     if (confirm) notice.get().on('pnotify.confirm', confirm);
     if (cancel) notice.get().on('pnotify.cancel', cancel);
-}
+};
 
 
 NSC.randomId = function () {
     return 'r' + Math.random().toString(36).replace(/[^a-z0-9]+/g, '').substr(2, 10);
-}
+};
 
 
 NSC.sendForm = function (eltHtml, handlers) {
@@ -120,7 +120,7 @@ NSC.sendForm = function (eltHtml, handlers) {
     if (elt.attr('data-method')) method = elt.attr('data-method');
     var data = NSC.serializeForm(form);
     NSC.genericAjax(method, url, data, handlers);
-}
+};
 
 NSC.genericAjaxGet = function (url, data, handlers, opts) {
     NSC.genericAjax('get', url, data, handlers, opts);
@@ -177,17 +177,17 @@ NSC.genericAjax = function (method, url
         complete: function (xhr, textStatus) {
         }
     };
-//    if (token) req.headers = { "RequestVerificationToken": token };
+    //    if (token) req.headers = { "RequestVerificationToken": token };
     if (opts) {
         for (var o in opts) if (!o.startsWith('md_')) req[o] = opts[o];
     }
     $.ajax(req);
-}
+};
 
 NSC.loadingPage = function () {
     $('.loading-page').addClass('exit');
     window.scrollTo(0, 0);
-}
+};
 NSC.handleGenericSuccess = function (resp, handlers) {
     if (resp.success) {
         if (resp.result && resp.result.redirectLink) {
