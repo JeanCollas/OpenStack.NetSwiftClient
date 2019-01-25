@@ -430,9 +430,13 @@ namespace NetSwiftClient
             //baseUri = new Uri(baseUri, container);
             //baseUri = new Uri(baseUri, obj);
             UriBuilder ub = new UriBuilder(objectStoreUrl);// baseUri);
-            if (ub.Path.EndsWith("/")) ub.Path += container.UrlEncoded();
-            else ub.Path += "/" + container.UrlEncoded();
-            ub.Path += "/" + obj.TrimStart('/').UrlEncoded();
+            if (ub.Path.EndsWith("/")) ub.Path += container.Trim('/').UrlEncoded();
+            else ub.Path += "/" + container.Trim('/').UrlEncoded()
+                // Hack for multi-level paths
+                .Replace("%2F", "/");
+            ub.Path += "/" + obj.TrimStart('/').UrlEncoded()
+                // Hack for multi-level paths
+                .Replace("%2F", "/");
             if (appendJson) ub.Query += "format=json";
             //System.Net.WebUtility.UrlEncode();
             return ub.Uri.ToString();
