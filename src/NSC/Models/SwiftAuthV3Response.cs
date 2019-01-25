@@ -7,7 +7,7 @@ namespace NetSwiftClient.Models
     public class SwiftAuthV3Response : SwiftBaseResponse
     {
         public string Token { get { string token = null; if (!Headers.TryGetValue(SwiftHeaders.AuthTokenReponse, out token)) return null; return token; } }
-        public DateTime? TokenExpires => ContentObject.Token.Expires_at;
+        public DateTime? TokenExpires => ContentObject?.Token?.Expires_at;
 
         public string ContentStr { get; set; }
         public TokenContainerObject ContentObject { get; set; }

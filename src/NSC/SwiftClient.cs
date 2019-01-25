@@ -424,17 +424,17 @@ namespace NetSwiftClient
 
         private string GetObjectUrl(string objectStoreUrl, string container, string obj, bool appendJson)
         {
-            container = container.TrimStart('/');
-            obj = obj.TrimStart('/');
-            var baseUri = new Uri(objectStoreUrl);
-            baseUri = new Uri(baseUri, container);
-            baseUri = new Uri(baseUri, obj);
-            UriBuilder ub = new UriBuilder(baseUri);
-            //if (ub.Path.EndsWith("/")) ub.Path += container.UrlEncoded();
-            //else ub.Path += "/" + container.UrlEncoded();
-            //ub.Path += "/" + obj.UrlEncoded();
+            //container = container.TrimStart('/');
+            //obj = obj.TrimStart('/');
+            //var baseUri = new Uri(objectStoreUrl);
+            //baseUri = new Uri(baseUri, container);
+            //baseUri = new Uri(baseUri, obj);
+            UriBuilder ub = new UriBuilder(objectStoreUrl);// baseUri);
+            if (ub.Path.EndsWith("/")) ub.Path += container.UrlEncoded();
+            else ub.Path += "/" + container.UrlEncoded();
+            ub.Path += "/" + obj.TrimStart('/').UrlEncoded();
             if (appendJson) ub.Query += "format=json";
-            
+            //System.Net.WebUtility.UrlEncode();
             return ub.Uri.ToString();
         }
 
