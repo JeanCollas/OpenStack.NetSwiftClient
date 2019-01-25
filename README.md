@@ -33,6 +33,19 @@ TODO:
 - Upload large files
 - Manage containers ACL
 
+### Login screen
+![ASP.NET Core client Openstack .Net Swift Client](https://github.com/JeanCollas/OpenStack.NetSwiftClient/raw/master/screenshots/asp-net-01.png)
+### Select account screen
+![ASP.NET Core client Openstack .Net Swift Client](https://github.com/JeanCollas/OpenStack.NetSwiftClient/raw/master/screenshots/asp-net-02.png)
+### Endpoint details, container creation & container selection
+![ASP.NET Core client Openstack .Net Swift Client](https://github.com/JeanCollas/OpenStack.NetSwiftClient/raw/master/screenshots/asp-net-03.png)
+### Container options
+![ASP.NET Core client Openstack .Net Swift Client](https://github.com/JeanCollas/OpenStack.NetSwiftClient/raw/master/screenshots/asp-net-04.png)
+### Container creation
+(too big so not included, see screenshot folder)
+### Container details, file upload & file management
+![ASP.NET Core client Openstack .Net Swift Client](https://github.com/JeanCollas/OpenStack.NetSwiftClient/raw/master/screenshots/asp-net-06.png)
+
 
 ## WPF demo project
 
@@ -54,12 +67,14 @@ Add a `DemoContext.NotIncluded.cs` file on the WPF demo project, with the follow
         }
     }
 ```
+
 The WPF project demonstrates:
 - Authentication on OpenStack Identity server (the token is stored in an encrypted cookie)
 - List an account properties and its containers (in the library, account = object store)
 - List a container properties and its files
 - Upload files
 - Download files
+![WPF client Openstack .Net Swift Client](https://github.com/JeanCollas/OpenStack.NetSwiftClient/raw/master/screenshots/wpf-client.png)
 
 ## OVH
 
