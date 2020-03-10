@@ -9,9 +9,9 @@ namespace NetSwiftClient
     {
         public static string UrlEncoded(this string str) => WebUtility.UrlEncode(str);
 
-        public static bool IsNullOrEmpty(this string s) => String.IsNullOrEmpty(s);
+        internal static bool IsNullOrEmpty(this string s) => String.IsNullOrEmpty(s);
 
-        public static string IfNullOrEmpty(this string src, string substitute)
+        internal static string IfNullOrEmpty(this string src, string substitute)
             => src.IsNullOrEmpty() ? substitute : src;
 
         public static T SafeConvert<T>(this string s, T defaultValue)
