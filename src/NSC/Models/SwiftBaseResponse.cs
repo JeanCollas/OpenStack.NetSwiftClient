@@ -41,6 +41,7 @@ namespace NetSwiftClient.Models
         public void PrefillFromResponse(HttpResponseMessage resp)
         {
             ContentLength = resp.Content?.Headers?.ContentLength ?? 0;
+            ContentType = resp.Content?.Headers?.ContentType?.ToString() ?? "application/octet-stream";
             IsSuccess = resp.IsSuccessStatusCode;
             Headers = resp.Headers.ToDictionary();
             Reason = resp.ReasonPhrase;
