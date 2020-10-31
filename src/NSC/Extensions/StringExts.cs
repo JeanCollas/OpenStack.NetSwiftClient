@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace NetSwiftClient
 {
@@ -38,6 +39,9 @@ namespace NetSwiftClient
 
         public static object SafeConvert(this string s, Type t, Func<object> defaultValueGenerator)
         {
+            // Converting from US numbers formatting
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-us");
+
             if (String.IsNullOrEmpty(s))
                 return defaultValueGenerator();
             if (!t.IsValueType)
