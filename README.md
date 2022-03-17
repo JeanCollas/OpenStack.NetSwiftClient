@@ -1,10 +1,17 @@
-# OpenStack .Net SwiftClient [![nuget](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml)
+# OpenStack .Net SwiftClient [![build](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml) ![Nuget](https://img.shields.io/nuget/v/NetSwiftClient.Core)
 
 A client developed in .Net Standard 2.0 to access OpenStack servers and perform the most frequent actions.
 
 A WPF client is included to demonstrate some of the most important functions, as well as a ASP.NET Core project.
 
 It has been developed to address the lack of .Net client for the OVH object storage service.
+
+## Installation
+Before using of the library [Nuget Package](https://www.nuget.org/packages/NetSwiftClient.Core/) must be installed.
+
+`Install-Package NetSwiftClient.Core` uisng Package Manager
+
+`dotnet add package NetSwiftClient.Core` using .NET CLI
 
 ## Contribution
 
