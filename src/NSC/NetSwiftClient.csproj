@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Jean Collas</Authors>
-    <PackageId>NetSwiftClient</PackageId>
+    <PackageId>NetSwiftClient.Core</PackageId>
     <LangVersion>latest</LangVersion>
     <Version>1.0$(VersionSuffix)</Version>
     <Description>A wrapper developed in .Net Standard 2.0 to access OpenStack servers and perform the most frequent actions.</Description>
@@ -19,7 +19,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.0$(VersionSuffix)</AssemblyVersion>
     <FileVersion>1.0$(VersionSuffix)</FileVersion>
-    <AssemblyName>NetSwiftClient</AssemblyName>
+    <AssemblyName>NetSwiftClient.Core</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
