@@ -9,6 +9,7 @@
     <Description>A wrapper developed in .Net Standard 2.0 to access OpenStack servers and perform the most frequent actions.</Description>
     <Copyright>Jean Collas 2020</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/JeanCollas/OpenStack.NetSwiftClient/tree/master/src/NSC</PackageProjectUrl>
     <PackageIcon>openstack-logo-icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/JeanCollas/OpenStack.NetSwiftClient.git</RepositoryUrl>
@@ -28,7 +29,8 @@
 
   <ItemGroup>
     <None Include="./../../LICENSE" Pack="true" PackagePath="" />
-    <None Include="openstack-logo-icon.png" Pack="true" PackagePath="" />
+    <None Include="./../../README.md" Pack="true" PackagePath="\"/>
+    <None Include="./openstack-logo-icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
   
 </Project>
