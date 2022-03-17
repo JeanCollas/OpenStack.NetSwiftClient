@@ -3,6 +3,9 @@ name: nuget
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'src/NSC/**'
+      
   pull_request:
     branches: [ master ]
 
