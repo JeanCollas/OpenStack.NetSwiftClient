@@ -1,4 +1,4 @@
-name: nuget
+name: build
 
 on:
   push:
