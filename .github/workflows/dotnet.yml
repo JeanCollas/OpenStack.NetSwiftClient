@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 5.0.100
     - name: Restore
-      run: dotnet restore 
+      run: dotnet restore src/NSC/NetSwiftClient.csproj
     - name: Pack
       run: dotnet pack src/NSC/NetSwiftClient.csproj --configuration Release --no-restore --output ./nupkgs --version-suffix .${{ github.run_number }}
     - name: Push
