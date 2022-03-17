@@ -1,4 +1,4 @@
-# OpenStack .Net SwiftClient
+# OpenStack .Net SwiftClient [![nuget](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml)
 
 A client developed in .Net Standard 2.0 to access OpenStack servers and perform the most frequent actions.
 
