@@ -7,8 +7,8 @@
     <LangVersion>latest</LangVersion>
     <Version>1.0$(VersionSuffix)</Version>
     <Description>A wrapper developed in .Net Standard 2.0 to access OpenStack servers and perform the most frequent actions.</Description>
-    <Copyright>Jean Collas 2021</Copyright>
-    <PackageLicenseFile>./../../LICENSE</PackageLicenseFile>
+    <Copyright>Jean Collas 2020</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/JeanCollas/OpenStack.NetSwiftClient</PackageProjectUrl>
     <PackageIcon>openstack-logo-icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/JeanCollas/OpenStack.NetSwiftClient.git</RepositoryUrl>
