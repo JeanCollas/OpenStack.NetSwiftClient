@@ -5,17 +5,15 @@ on:
     branches: [ master ]
     paths:
       - 'src/NSC/**'
-      
   pull_request:
     branches: [ master ]
-    
+    paths:
+      - 'src/NSC/**'
   workflow_dispatch:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
