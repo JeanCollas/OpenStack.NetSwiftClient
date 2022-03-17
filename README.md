@@ -9,7 +9,7 @@ It has been developed to address the lack of .Net client for the OVH object stor
 ## Installation
 Before using of the library [Nuget Package](https://www.nuget.org/packages/NetSwiftClient.Core/) must be installed.
 
-`Install-Package NetSwiftClient.Core` uisng Package Manager
+`Install-Package NetSwiftClient.Core` using Package Manager
 
 `dotnet add package NetSwiftClient.Core` using .NET CLI
 
