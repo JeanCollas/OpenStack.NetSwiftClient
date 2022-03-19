@@ -12,7 +12,13 @@ namespace NetSwiftClient
     public class SwiftClient : ISwiftClient
     {
         public readonly HttpClient Client = new HttpClient();
+        private readonly bool _percentEncoding;
         private string _Token;
+
+        public SwiftClient(bool percentEncoding = false)
+        {
+            _percentEncoding = percentEncoding;
+        }
 
         private string Token
         {
@@ -437,8 +443,8 @@ namespace NetSwiftClient
         private string GetContainerUrl(string objectStoreUrl, string container, bool appendJson)
         {
             UriBuilder ub = new UriBuilder(objectStoreUrl);
-            if (ub.Path.EndsWith("/")) ub.Path += container.UrlEncoded();
-            else ub.Path += "/" + container.UrlEncoded();
+            if (ub.Path.EndsWith("/")) ub.Path += container.UrlEncoded(_percentEncoding);
+            else ub.Path += "/" + container.UrlEncoded(_percentEncoding);
             if (appendJson) ub.Query += "format=json";
             return ub.Uri.ToString();
         }
@@ -451,12 +457,12 @@ namespace NetSwiftClient
             //baseUri = new Uri(baseUri, container);
             //baseUri = new Uri(baseUri, obj);
             UriBuilder ub = new UriBuilder(objectStoreUrl); // baseUri);
-            if (ub.Path.EndsWith("/")) ub.Path += container.Trim('/').UrlEncoded();
+            if (ub.Path.EndsWith("/")) ub.Path += container.Trim('/').UrlEncoded(_percentEncoding);
             else
-                ub.Path += "/" + container.Trim('/').UrlEncoded()
+                ub.Path += "/" + container.Trim('/').UrlEncoded(_percentEncoding)
                     // Hack for multi-level paths
                     .Replace("%2F", "/");
-            ub.Path += "/" + obj.TrimStart('/').UrlEncoded()
+            ub.Path += "/" + obj.TrimStart('/').UrlEncoded(_percentEncoding)
                 // Hack for multi-level paths
                 .Replace("%2F", "/");
             if (appendJson) ub.Query += "format=json";
