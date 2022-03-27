@@ -1,4 +1,4 @@
-# OpenStack .Net SwiftClient [![build](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/semack/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml) [![Nuget](https://img.shields.io/nuget/v/NetSwiftClient.Core)](https://www.nuget.org/packages/NetSwiftClient.Core/) [![Nuget](https://img.shields.io/nuget/dt/NetSwiftClient.Core)](https://www.nuget.org/packages/NetSwiftClient.Core/)
+# OpenStack .Net SwiftClient [![build](https://github.com/JeanCollas/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/JeanCollas/OpenStack.NetSwiftClient/actions/workflows/dotnet.yml) [![Nuget](https://img.shields.io/nuget/v/NetSwiftClient.Core)](https://www.nuget.org/packages/NetSwiftClient.Core/) [![Nuget](https://img.shields.io/nuget/dt/NetSwiftClient.Core)](https://www.nuget.org/packages/NetSwiftClient.Core/)
 
 A client developed in .Net Standard 2.0 to access OpenStack servers and perform the most frequent actions.
 
