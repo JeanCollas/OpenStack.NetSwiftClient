@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -13,17 +11,32 @@ namespace NetSwiftClient
 {
     public class SwiftClient : ISwiftClient
     {
-        private readonly HttpClient _Client = new HttpClient();
+        public readonly HttpClient Client = new HttpClient();
+        private readonly bool _percentEncoding;
         private string _Token;
-        private string Token { get => DateTime.UtcNow < TokenExpiresAt ? _Token : null; set => _Token = value; }
+
+        public SwiftClient(bool percentEncoding = false)
+        {
+            _percentEncoding = percentEncoding;
+        }
+
+        private string Token
+        {
+            get => DateTime.UtcNow < TokenExpiresAt ? _Token : null;
+            set => _Token = value;
+        }
+
         private DateTime TokenExpiresAt { get; set; }
 
         #region Identity/Authentication
-        public Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, string name, string password, string domain = "Default")
+
+        public Task<SwiftAuthV3Response> AuthenticateAsync(string authUrl, string name, string password,
+            string domain = "Default")
         {
             var reqObj = new SwiftAuthV3Request(name, password, domain);
             return AuthenticateAsync(authUrl, reqObj);
         }
+
         public Task<SwiftAuthV3Response> AuthenticateTokenAsync(string authUrl, string token)
         {
             var reqObj = new SwiftAuthV3Request(token);
@@ -42,7 +55,7 @@ namespace NetSwiftClient
             content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
             try
             {
-                var resp = await _Client.PostAsync(tokenUrl, content);
+                var resp = await Client.PostAsync(tokenUrl, content);
                 if (resp.IsSuccessStatusCode)
                 {
                     var respTxt = await resp.Content.ReadAsStringAsync();
@@ -54,7 +67,8 @@ namespace NetSwiftClient
                         Headers = resp.Headers.ToDictionary(),
                         Reason = resp.ReasonPhrase,
                         StatusCode = resp.StatusCode,
-                        ContentObject = JsonConvert.DeserializeObject<SwiftAuthV3Response.TokenContainerObject>(respTxt),
+                        ContentObject =
+                            JsonConvert.DeserializeObject<SwiftAuthV3Response.TokenContainerObject>(respTxt),
                         ContentStr = respTxt
                     };
                     InitToken(result.Token, result.TokenExpires);
@@ -96,7 +110,8 @@ namespace NetSwiftClient
         public Task<SwiftAuthV3CatalogResponse> GetServiceCatalog(string authUrl)
         {
             var catalogUrl = $"{authUrl}/auth/catalog";
-            return GenericGetRequestAsync<SwiftAuthV3CatalogResponse, SwiftAuthV3CatalogResponse.CatalogObject>(catalogUrl);
+            return GenericGetRequestAsync<SwiftAuthV3CatalogResponse, SwiftAuthV3CatalogResponse.CatalogObject>(
+                catalogUrl);
         }
 
         #endregion Identity/Authentication
@@ -114,7 +129,9 @@ namespace NetSwiftClient
         /// <param name="prefix">Only objects with this prefix will be returned. When combined with a delimiter query, this enables API users to simulate and traverse the objects in a container as if they were in a directory tree</param>
         /// <param name="delimiter">The delimiter is a single character used to split object names to present a pseudo-directory hierarchy of objects.When combined with a prefix query, this enables API users to simulate and traverse the objects in a container as if they were in a directory tree</param>
         /// <returns></returns>
-        public Task<SwiftAccountDetailsResponse> AccountListContainersAsync(string objectStoreUrl, int? limit = null, string marker = null, string endMarker = null, string format = null, string prefix = null, string delimiter = null)
+        public Task<SwiftAccountDetailsResponse> AccountListContainersAsync(string objectStoreUrl, int? limit = null,
+            string marker = null, string endMarker = null, string format = null, string prefix = null,
+            string delimiter = null)
         {
             string url = GetStorageUrl(objectStoreUrl, true);
 
@@ -133,7 +150,8 @@ namespace NetSwiftClient
             url = ub.Uri.ToString();
 
 
-            return GenericGetRequestAsync<SwiftAccountDetailsResponse, List<SwiftAccountDetailsResponse.ContainerObject>>(url);
+            return GenericGetRequestAsync<SwiftAccountDetailsResponse,
+                List<SwiftAccountDetailsResponse.ContainerObject>>(url);
         }
 
         /// <summary>
@@ -156,7 +174,8 @@ namespace NetSwiftClient
         /// </param>
         /// <param name="additionalHeaders">Will add headers {Key}:{Value}</param>
         /// <returns></returns>
-        public Task<SwiftBaseResponse> AccountPostAsync(string objectStoreUrl, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
+        public Task<SwiftBaseResponse> AccountPostAsync(string objectStoreUrl,
+            Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
         {
             string url = GetStorageUrl(objectStoreUrl, true);
 
@@ -178,7 +197,8 @@ namespace NetSwiftClient
         /// <param name="key"></param>
         /// <param name="firstKey"></param>
         /// <returns></returns>
-        public Task<SwiftBaseResponse> AccountSetTempUrlKeyAsync(string objectStoreUrl, string key, bool firstKey = true)
+        public Task<SwiftBaseResponse> AccountSetTempUrlKeyAsync(string objectStoreUrl, string key,
+            bool firstKey = true)
         {
             string url = GetStorageUrl(objectStoreUrl, true);
 
@@ -200,11 +220,13 @@ namespace NetSwiftClient
         {
             string url = GetContainerUrl(objectStoreUrl, container, true);
 
-            return GenericGetRequestAsync<SwiftContainerInfoResponse, List<SwiftContainerInfoResponse.ContainerFileObject>>(url);
+            return GenericGetRequestAsync<SwiftContainerInfoResponse,
+                List<SwiftContainerInfoResponse.ContainerFileObject>>(url);
         }
 
 
-        public Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container, SwiftContainerPutParameters prms)
+        public Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container,
+            SwiftContainerPutParameters prms)
         {
             string url = GetContainerUrl(objectStoreUrl, container, true);
 
@@ -217,7 +239,8 @@ namespace NetSwiftClient
         /// <param name="container">The unique (within an account) name for the container. The container name must be from 1 to 256 characters long and can start with any character and contain any pattern. Character set must be UTF-8. The container name cannot contain a slash (/) character</param>
         /// <returns>201, 202 success</returns>
         /// <returns>400, 404, 507 error</returns>
-        public Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container, Dictionary<string, string> metadata = null, Dictionary<string, string> additionalHeaders = null)
+        public Task<SwiftBaseResponse> ContainerPutAsync(string objectStoreUrl, string container,
+            Dictionary<string, string> metadata = null, Dictionary<string, string> additionalHeaders = null)
         {
             string url = GetContainerUrl(objectStoreUrl, container, true);
 
@@ -225,14 +248,16 @@ namespace NetSwiftClient
             if (metadata != null)
                 foreach (var kvp in metadata)
                 {
-                    additionalHeaders.Add(SwiftHeaders.ContainerMetaPrefix + kvp.Key.UrlEncoded(), kvp.Value.UrlEncoded());
+                    additionalHeaders.Add(SwiftHeaders.ContainerMetaPrefix + kvp.Key.UrlEncoded(),
+                        kvp.Value.UrlEncoded());
                 }
 
             return GenericPutRequestAsync<SwiftBaseResponse>(url, additionalHeaders);
         }
 
         /// <summary>POST Create, update, or delete container metadata</summary>
-        public Task<SwiftBaseResponse> ContainerPostAsync(string objectStoreUrl, string container, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
+        public Task<SwiftBaseResponse> ContainerPostAsync(string objectStoreUrl, string container,
+            Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
         {
             string url = GetContainerUrl(objectStoreUrl, container, true);
 
@@ -269,7 +294,6 @@ namespace NetSwiftClient
         }
 
         #endregion Container info
-
 
 
         //GET /v1/{account}/{container}/{object}
@@ -312,7 +336,9 @@ namespace NetSwiftClient
         /// <param name="objectStoreKey"></param>
         /// <param name="ipRange">1.2.3.4 or 1.2.3.0/24 </param>
         /// <returns></returns>
-        public string ObjectGetTmpUrlAsync(string objectStoreUrl, string container, string objectName, TimeSpan expiresIn, string objectStoreKey, string fileName = null, string ipRange = null, bool? noDownloadButInline = null)
+        public string ObjectGetTmpUrlAsync(string objectStoreUrl, string container, string objectName,
+            TimeSpan expiresIn, string objectStoreKey, string fileName = null, string ipRange = null,
+            bool? noDownloadButInline = null)
         {
             // https://docs.openstack.org/kilo/config-reference/content/object-storage-tempurl.html
 
@@ -320,7 +346,8 @@ namespace NetSwiftClient
 
             // GET HEAD PUT POST DELETE
             var method = "GET";
-            var expires = ((int)(DateTime.UtcNow.Add(expiresIn) - new DateTime(1970, 1, 1)).TotalSeconds).ToString();// DateTime.UtcNow.Add(expiresIn).ToString("yyyy-MM-ddTHH:mm:ssK");
+            var expires = ((int)(DateTime.UtcNow.Add(expiresIn) - new DateTime(1970, 1, 1)).TotalSeconds)
+                .ToString(); // DateTime.UtcNow.Add(expiresIn).ToString("yyyy-MM-ddTHH:mm:ssK");
             var hmacBody = $"{method}\n{expires}\n{new Uri(url).PathAndQuery}";
             if (!ipRange.IsNullOrEmpty()) hmacBody = $"ip={ipRange}\n" + hmacBody;
             var sig = hmacBody.GenerateHMACSHA1SignatureHexDigest(objectStoreKey);
@@ -334,8 +361,6 @@ namespace NetSwiftClient
                 queryParams.Add("filename", fileName);
 
 
-
-
             UriBuilder ub = new UriBuilder(url);
             foreach (var qp in queryParams)
                 ub.Query += "&" + qp.Key + "=" + qp.Value.UrlEncoded();
@@ -344,26 +369,27 @@ namespace NetSwiftClient
                 ub.Query += "&inline";
 
             return ub.Uri.ToString();
-
         }
 
 
         /// <summary>Create or replace object</summary>
         /// <returns></returns>
         /// PUT /v1/{account}/{container}/{object}
-        public Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName, Stream data, string contentType = "application/octet-stream")
+        public Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName,
+            Stream data, string contentType = "application/octet-stream")
         {
             var url = GetObjectUrl(objectStoreUrl, container, objectName, true);
             var contentHeaders = new Dictionary<string, string>()
             {
-                {SwiftHeaders.ContentType,contentType }
+                { SwiftHeaders.ContentType, contentType }
             };
             return GenericPutRequestAsync<SwiftBaseResponse>(url, data, additionalContentHeaders: contentHeaders);
         }
 
         /// <summary>Create or replace object</summary>
         /// PUT /v1/{account}/{container}/{object}
-        public Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName, byte[] data, string contentType = "application/octet-stream")
+        public Task<SwiftBaseResponse> ObjectPutAsync(string objectStoreUrl, string container, string objectName,
+            byte[] data, string contentType = "application/octet-stream")
         {
             var url = GetObjectUrl(objectStoreUrl, container, objectName, true);
 
@@ -371,7 +397,8 @@ namespace NetSwiftClient
         }
 
         /// <summary>POST Create, update, or delete object metadata</summary>
-        public Task<SwiftBaseResponse> ObjectPostAsync(string objectStoreUrl, string container, string objectName, Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
+        public Task<SwiftBaseResponse> ObjectPostAsync(string objectStoreUrl, string container, string objectName,
+            Dictionary<string, string> metaValues = null, Dictionary<string, string> additionalHeaders = null)
         {
             string url = GetObjectUrl(objectStoreUrl, container, objectName, true);
 
@@ -416,8 +443,8 @@ namespace NetSwiftClient
         private string GetContainerUrl(string objectStoreUrl, string container, bool appendJson)
         {
             UriBuilder ub = new UriBuilder(objectStoreUrl);
-            if (ub.Path.EndsWith("/")) ub.Path += container.UrlEncoded();
-            else ub.Path += "/" + container.UrlEncoded();
+            if (ub.Path.EndsWith("/")) ub.Path += container.UrlEncoded(_percentEncoding);
+            else ub.Path += "/" + container.UrlEncoded(_percentEncoding);
             if (appendJson) ub.Query += "format=json";
             return ub.Uri.ToString();
         }
@@ -429,12 +456,13 @@ namespace NetSwiftClient
             //var baseUri = new Uri(objectStoreUrl);
             //baseUri = new Uri(baseUri, container);
             //baseUri = new Uri(baseUri, obj);
-            UriBuilder ub = new UriBuilder(objectStoreUrl);// baseUri);
-            if (ub.Path.EndsWith("/")) ub.Path += container.Trim('/').UrlEncoded();
-            else ub.Path += "/" + container.Trim('/').UrlEncoded()
-                // Hack for multi-level paths
-                .Replace("%2F", "/");
-            ub.Path += "/" + obj.TrimStart('/').UrlEncoded()
+            UriBuilder ub = new UriBuilder(objectStoreUrl); // baseUri);
+            if (ub.Path.EndsWith("/")) ub.Path += container.Trim('/').UrlEncoded(_percentEncoding);
+            else
+                ub.Path += "/" + container.Trim('/').UrlEncoded(_percentEncoding)
+                    // Hack for multi-level paths
+                    .Replace("%2F", "/");
+            ub.Path += "/" + obj.TrimStart('/').UrlEncoded(_percentEncoding)
                 // Hack for multi-level paths
                 .Replace("%2F", "/");
             if (appendJson) ub.Query += "format=json";
@@ -443,13 +471,14 @@ namespace NetSwiftClient
         }
 
 
-        async Task<T> GenericDeleteRequestNoContentAsync<T>(string url, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericDeleteRequestNoContentAsync<T>(string url, bool includeToken = true)
+            where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Delete, url);
             req.FillTokenHeader(Token);
             try
             {
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 T result = (T)Activator.CreateInstance(typeof(T), resp);
                 return result;
             }
@@ -471,7 +500,7 @@ namespace NetSwiftClient
             req.FillTokenHeader(Token);
             try
             {
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 T result = (T)Activator.CreateInstance(typeof(T), resp);
                 await result.PrefillContentAsync(resp);
                 return result;
@@ -487,13 +516,15 @@ namespace NetSwiftClient
                 return result;
             }
         }
-        async Task<T> GenericGetRequestNoContentAsync<T>(string url, bool includeToken = true) where T : SwiftBaseResponse
+
+        async Task<T> GenericGetRequestNoContentAsync<T>(string url, bool includeToken = true)
+            where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, url);
             req.FillTokenHeader(Token);
             try
             {
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 T result = (T)Activator.CreateInstance(typeof(T), resp);
                 return result;
             }
@@ -509,13 +540,14 @@ namespace NetSwiftClient
             }
         }
 
-        async Task<T> GenericHeadRequestNoContentAsync<T>(string url, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericHeadRequestNoContentAsync<T>(string url, bool includeToken = true)
+            where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Head, url);
             req.FillTokenHeader(Token);
             try
             {
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 T result = (T)Activator.CreateInstance(typeof(T), resp);
                 return result;
             }
@@ -539,7 +571,8 @@ namespace NetSwiftClient
         /// <param name="additionalHeaders">Will be urlencoded</param>
         /// <param name="includeToken"></param>
         /// <returns></returns>
-        async Task<T> GenericPostRequestNoContentAsync<T>(string url, Dictionary<string, string> additionalHeaders, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericPostRequestNoContentAsync<T>(string url, Dictionary<string, string> additionalHeaders,
+            bool includeToken = true) where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Post, url);
             req.FillTokenHeader(Token);
@@ -547,7 +580,7 @@ namespace NetSwiftClient
                 req.Headers.Add(kvp.Key, kvp.Value.UrlEncoded());
             try
             {
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 T result = (T)Activator.CreateInstance(typeof(T), resp);
                 return result;
             }
@@ -564,7 +597,8 @@ namespace NetSwiftClient
         }
 
 
-        async Task<T> GenericPutRequestAsync<T>(string url, Dictionary<string, string> additionalHeaders = null, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericPutRequestAsync<T>(string url, Dictionary<string, string> additionalHeaders = null,
+            bool includeToken = true) where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Put, url);
             req.FillTokenHeader(Token);
@@ -574,7 +608,7 @@ namespace NetSwiftClient
                     foreach (var h in additionalHeaders)
                         req.Headers.Add(h.Key, h.Value);
 
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 //// container not found
                 //if (resp.StatusCode == HttpStatusCode.NotFound)
                 //    return await EnsurePutContainer(containerId, () => PutObject(containerId, objectName, data, headers, queryParams)).ConfigureAwait(false);
@@ -595,13 +629,15 @@ namespace NetSwiftClient
         }
 
 
-        async Task<T> GenericPutRequestAsync<T>(string url, Stream content, Dictionary<string, string> additionalHeaders = null, Dictionary<string, string> additionalContentHeaders = null, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericPutRequestAsync<T>(string url, Stream content,
+            Dictionary<string, string> additionalHeaders = null,
+            Dictionary<string, string> additionalContentHeaders = null, bool includeToken = true)
+            where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Put, url);
             req.FillTokenHeader(Token);
             try
             {
-
                 if (additionalHeaders != null)
                     foreach (var h in additionalHeaders)
                         req.Headers.Add(h.Key, h.Value);
@@ -612,7 +648,7 @@ namespace NetSwiftClient
                     foreach (var h in additionalContentHeaders)
                         req.Content.Headers.Add(h.Key, h.Value);
 
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 //// container not found
                 //if (resp.StatusCode == HttpStatusCode.NotFound)
                 //    return await EnsurePutContainer(containerId, () => PutObject(containerId, objectName, data, headers, queryParams)).ConfigureAwait(false);
@@ -632,7 +668,10 @@ namespace NetSwiftClient
             }
         }
 
-        async Task<T> GenericPutRequestAsync<T>(string url, byte[] content, Dictionary<string, string> additionalHeaders = null, Dictionary<string, string> additionalContentHeaders = null, bool includeToken = true) where T : SwiftBaseResponse
+        async Task<T> GenericPutRequestAsync<T>(string url, byte[] content,
+            Dictionary<string, string> additionalHeaders = null,
+            Dictionary<string, string> additionalContentHeaders = null, bool includeToken = true)
+            where T : SwiftBaseResponse
         {
             HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Put, url);
             req.FillTokenHeader(Token);
@@ -648,7 +687,7 @@ namespace NetSwiftClient
                     foreach (var h in additionalContentHeaders)
                         req.Content.Headers.Add(h.Key, h.Value);
 
-                var resp = await _Client.SendAsync(req);
+                var resp = await Client.SendAsync(req);
                 //// container not found
                 //if (resp.StatusCode == HttpStatusCode.NotFound)
                 //    return await EnsurePutContainer(containerId, () => PutObject(containerId, objectName, data, headers, queryParams)).ConfigureAwait(false);

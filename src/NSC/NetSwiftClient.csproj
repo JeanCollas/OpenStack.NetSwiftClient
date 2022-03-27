@@ -2,10 +2,35 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>jeancollas</Authors>
+    <PackageId>NetSwiftClient.Core</PackageId>
+    <LangVersion>latest</LangVersion>
+    <Version>1.0$(VersionSuffix)</Version>
+    <Description>A wrapper developed in .Net Standard 2.0 to access OpenStack servers and perform the most frequent actions.</Description>
+    <Copyright>Jean Collas 2020</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/JeanCollas/OpenStack.NetSwiftClient/tree/master/src/NSC</PackageProjectUrl>
+    <PackageIcon>openstack-logo-icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/JeanCollas/OpenStack.NetSwiftClient.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>openstack;swift</PackageTags>
+    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <AssemblyVersion>1.0$(VersionSuffix)</AssemblyVersion>
+    <FileVersion>1.0$(VersionSuffix)</FileVersion>
+    <AssemblyName>NetSwiftClient.Core</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="./../../LICENSE" Pack="true" PackagePath="" />
+    <None Include="./../../README.md" Pack="true" PackagePath="\"/>
+    <None Include="./openstack-logo-icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+  
 </Project>

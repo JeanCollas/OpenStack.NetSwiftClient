@@ -7,11 +7,18 @@ namespace NetSwiftClient
 {
     public static class StringExts
     {
-        public static string UrlEncoded(this string str) => WebUtility.UrlEncode(str);
+        public static string UrlEncoded(this string str, bool percentEncoding = false)
+        {
+            if (percentEncoding)
+            {
+                return Uri.EscapeUriString(str);
+            }
+            return WebUtility.UrlEncode(str);
+        }
 
-        internal static bool IsNullOrEmpty(this string s) => String.IsNullOrEmpty(s);
+        public static bool IsNullOrEmpty(this string s) => string.IsNullOrEmpty(s);
 
-        internal static string IfNullOrEmpty(this string src, string substitute)
+        public static string IfNullOrEmpty(this string src, string substitute)
             => src.IsNullOrEmpty() ? substitute : src;
 
         public static T SafeConvert<T>(this string s, T defaultValue)

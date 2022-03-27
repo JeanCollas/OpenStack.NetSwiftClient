@@ -1,0 +1,28 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'src/NSC/**'
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'src/NSC/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Restore
+      run: dotnet restore src/NSC/NetSwiftClient.csproj
+    - name: Pack
+      run: dotnet pack src/NSC/NetSwiftClient.csproj --configuration Release --no-restore --output ./nupkgs --version-suffix .${{ github.run_number }}
+    - name: Push
+      run: dotnet nuget push ./nupkgs/*.nupkg --source ${{secrets.NUGET_SOURCE}} --api-key ${{secrets.NUGET_API_KEY}} 
