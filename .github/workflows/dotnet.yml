@@ -25,4 +25,4 @@ jobs:
     - name: Pack
       run: dotnet pack src/NSC/NetSwiftClient.csproj --configuration Release --no-restore --output ./nupkgs --version-suffix .${{ github.run_number }}
     - name: Push
-      run: dotnet nuget push ./nupkgs/*.nupkg --source ${{secrets.NUGET_SOURCE}} --api-key ${{secrets.NUGET_API_KEY}} 
+      run: dotnet nuget push ./nupkgs/*.nupkg --source ${{ secrets.NUGET_SOURCE }} --api-key ${{ secrets.NUGET_API_KEY }} 
